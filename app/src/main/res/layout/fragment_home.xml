@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.gms.maps.MapView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="40sp"
+        android:layout_marginLeft="40sp"
+        android:background="@drawable/border_notifikasi"
+        android:layout_marginTop="80dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="16dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textSize="23dp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:text="Terjadi Kecelakaan" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="14dp"
+            android:paddingTop="10dp"
+            android:background="@color/buttonMerahTua"
+            android:paddingBottom="10dp"
+            android:textColor="#FFFFFF"
+            android:text="Jl. Dharma Husada Indah" />
+            <TextView
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="14dp"
+                android:textColor="#000"
+                android:text="1 KM dari lokasi anda saat ini" />
+        </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        <ImageView
+            android:id="@+id/icon_marker"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_marker"/>
+        <Button
+            android:id="@+id/lihat_gambar"
+            android:layout_marginTop="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lihat Gambar"
+            android:textSize="12dp"
+            android:background="@drawable/border_radius"
+            android:paddingLeft="20sp"
+            android:paddingRight="20sp"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"/>
+        </LinearLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_gravity="bottom"
+        android:layout_margin="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/cari_lokasi"
+            android:background="@drawable/border_radius"
+            android:padding="15dp"
+            android:text="Menuju Lokasi Kecelakaan"
+            android:textColor="#FFFFFF"
+            android:textSize="15dp"
+            android:textAllCaps="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="190dp"
+        android:backgroundTint="@color/buttonMerah"
+        app:srcCompat="@android:drawable/sym_call_outgoing" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/kamera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="120dp"
+        app:fabSize="normal"
+        android:clickable="true"
+        android:background="@drawable/border_radius"
+        android:backgroundTint="@color/buttonHijau"
+        app:srcCompat="@android:drawable/ic_menu_camera" />
+
+</FrameLayout>

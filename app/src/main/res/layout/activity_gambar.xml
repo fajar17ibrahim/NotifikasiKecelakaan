@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GambarActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#FFFFFF"
+        app:title="Ambil Gambar"
+        android:paddingLeft="10dp"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="80dp" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_marginBottom="30sp"
+            android:layout_marginTop="30dp"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:layout_height="wrap_content"
+            android:text="Dokumentasikan"
+            android:gravity="center" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:scaleType="centerCrop"
+            android:background="@drawable/border"
+            android:layout_marginRight="40sp"
+            android:layout_marginLeft="40dp"
+            android:src="@drawable/dummy_foto"
+            android:layout_width="match_parent"
+            android:layout_height="300dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:textSize="12dp"
+            android:layout_marginRight="40sp"
+            android:layout_marginLeft="40sp"
+            android:gravity="center"
+            android:text="Tekan tombol ambil gambar untuk dokumentasi kecelakaan kemudian tekan tombol upload" />
+        <Button
+            android:layout_gravity="bottom"
+            android:background="@color/buttonHijau"
+            android:id="@+id/ambil_gambar"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="40sp"
+            android:layout_marginLeft="40sp"
+            android:layout_width="match_parent"
+            android:textColor="#FFFFFF"
+            android:textSize="12dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="AMBIL GAMBAR" />
+
+        <Button
+            android:layout_gravity="bottom"
+            android:background="@color/colorPrimary"
+            android:id="@+id/upload_gambar"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="40sp"
+            android:layout_marginLeft="40sp"
+            android:textColor="#FFFFFF"
+            android:textSize="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="UPLOAD"
+            android:layout_marginBottom="50dp"/>
+    </LinearLayout>
+    </ScrollView>
+    <LinearLayout
+        android:gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/footer"
+            android:textSize="12dp"
+            android:gravity="bottom"
+            android:layout_marginBottom="20dp"
+            />
+    </LinearLayout>
+</RelativeLayout>
