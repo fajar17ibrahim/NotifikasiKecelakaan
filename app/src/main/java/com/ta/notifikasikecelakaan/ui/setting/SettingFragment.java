@@ -1,14 +1,11 @@
 package com.ta.notifikasikecelakaan.ui.setting;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
@@ -18,10 +15,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.ta.notifikasikecelakaan.GambarActivity;
-import com.ta.notifikasikecelakaan.LoginActivity;
 import com.ta.notifikasikecelakaan.R;
-import com.ta.notifikasikecelakaan.RegistrasiActivity;
 
 public class SettingFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener{
 

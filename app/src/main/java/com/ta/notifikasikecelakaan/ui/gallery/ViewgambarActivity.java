@@ -1,4 +1,4 @@
-package com.ta.notifikasikecelakaan;
+package com.ta.notifikasikecelakaan.ui.gallery;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.ta.notifikasikecelakaan.R;
 
 public class ViewgambarActivity extends AppCompatActivity {
 

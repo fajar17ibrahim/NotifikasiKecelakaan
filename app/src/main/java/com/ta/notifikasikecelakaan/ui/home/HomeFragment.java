@@ -31,10 +31,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.ta.notifikasikecelakaan.GambarActivity;
-import com.ta.notifikasikecelakaan.MainActivity;
 import com.ta.notifikasikecelakaan.R;
-import com.ta.notifikasikecelakaan.ViewgambarActivity;
 import com.ta.notifikasikecelakaan.ui.gallery.GalleryFragment;
 
 import static android.content.Context.LOCATION_SERVICE;
@@ -79,6 +78,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, View.O
                             .beginTransaction()
                             .replace(R.id.nav_host_fragment, galleryFragment, GalleryFragment.class.getSimpleName());
                     mFragmentTransaction.addToBackStack(null).commit();
+                    NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+                    navigationView.setCheckedItem(R.id.nav_gallery);
+                    navigationView.setTag("Galery");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

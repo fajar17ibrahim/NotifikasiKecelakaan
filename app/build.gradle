@@ -37,9 +37,10 @@ dependencies {
     implementation 'com.karumi:dexter:5.0.0'
     implementation 'com.google.android.libraries.places:places:1.1.0'
 
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'com.android.volley:volley:1.1.1'
-    //implementation project(':volley-master')
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.0.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.0.2'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.4.1'
 
     implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha01'
 

@@ -29,4 +29,12 @@
     <string name="menu_pesan">Pesan</string>
     <string name="tv_judul">Judul</string>
     <string name="tv_isi">Isi</string>
+    <string name="tv_nama">Nama</string>
+    <string name="tv_alamat">Alamat</string>
+    <string name="tv_telp">Telepon</string>
+    <string name="menu_polisi">Kantor Polisi</string>
+    <string name="menu_rs">Rumah Sakit</string>
+    <string name="text_name">No Name</string>
+    <string name="text_address">No Address</string>
+    <string name="text_phone">No Phone</string>
 </resources>

@@ -9,6 +9,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.ta.notifikasikecelakaan.ui.login.LoginActivity;
+
 public class Splash extends AppCompatActivity {
     private ImageView imageView;
 

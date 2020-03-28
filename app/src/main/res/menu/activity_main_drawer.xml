@@ -14,6 +14,14 @@
             android:icon="@drawable/baseline_image_black_18dp"
             android:title="@string/menu_gallery" />
         <item
+            android:id="@+id/nav_polisi"
+            android:icon="@drawable/baseline_image_black_18dp"
+            android:title="@string/menu_polisi" />
+        <item
+            android:id="@+id/nav_rs"
+            android:icon="@drawable/baseline_image_black_18dp"
+            android:title="@string/menu_rs" />
+        <item
             android:id="@+id/nav_riwayat"
             android:icon="@drawable/baseline_history_black_18dp"
             android:title="@string/menu_slideshow" />

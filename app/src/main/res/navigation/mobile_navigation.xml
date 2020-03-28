@@ -18,6 +18,18 @@
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
+        android:id="@+id/nav_polisi"
+        android:name="com.ta.notifikasikecelakaan.ui.policeoffice.PoliceOfficeFragment"
+        android:label="@string/menu_polisi"
+        tools:layout="@layout/fragment_polisi" />
+
+    <fragment
+        android:id="@+id/nav_rs"
+        android:name="com.ta.notifikasikecelakaan.ui.rs.RsFragment"
+        android:label="@string/menu_rs"
+        tools:layout="@layout/fragment_rs" />
+
+    <fragment
         android:id="@+id/nav_riwayat"
         android:name="com.ta.notifikasikecelakaan.ui.riwayat.RiwayatFragment"
         android:label="@string/menu_history"

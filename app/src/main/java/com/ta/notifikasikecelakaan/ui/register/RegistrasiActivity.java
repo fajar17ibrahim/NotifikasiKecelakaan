@@ -1,4 +1,4 @@
-package com.ta.notifikasikecelakaan;
+package com.ta.notifikasikecelakaan.ui.register;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,14 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.ta.notifikasikecelakaan.app.AppController;
+import com.ta.notifikasikecelakaan.R;
+import com.ta.notifikasikecelakaan.Server;
+import com.ta.notifikasikecelakaan.ui.login.LoginActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -165,7 +164,7 @@ public class RegistrasiActivity extends AppCompatActivity implements View.OnClic
         };
 
         // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq, tag_json_obj);
+        //AppController.getInstance().addToRequestQueue(strReq, tag_json_obj);
     }
 
     private void showDialog() {

@@ -20,11 +20,9 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.ta.notifikasikecelakaan.app.AppController;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,18 +69,18 @@ public class KendaraanActivity extends AppCompatActivity implements View.OnClick
         }
 
         // Cek status Kendaraan jika TRUE maka langsung buka MainActivity
-        SharedPreferences sharedpreferences = getSharedPreferences(LoginActivity.my_shared_preferences, Context.MODE_PRIVATE);
-        cek = sharedpreferences.getInt(TAG_CEK, 0);
-        id = sharedpreferences.getString(TAG_ID, null);
-        telp = sharedpreferences.getString(TAG_TELP, null);
-
-        if (cek==1) {
-            Intent intent = new Intent(KendaraanActivity.this, MainActivity.class);
-            intent.putExtra(TAG_ID, id);
-            intent.putExtra(TAG_TELP, telp);
-            finish();
-            startActivity(intent);
-        }
+//        SharedPreferences sharedpreferences = getSharedPreferences(LoginActivity.my_shared_preferences, Context.MODE_PRIVATE);
+//        cek = sharedpreferences.getInt(TAG_CEK, 0);
+//        id = sharedpreferences.getString(TAG_ID, null);
+//        telp = sharedpreferences.getString(TAG_TELP, null);
+//
+//        if (cek==1) {
+//            Intent intent = new Intent(KendaraanActivity.this, MainActivity.class);
+//            intent.putExtra(TAG_ID, id);
+//            intent.putExtra(TAG_TELP, telp);
+//            finish();
+//            startActivity(intent);
+//        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -185,7 +183,7 @@ public class KendaraanActivity extends AppCompatActivity implements View.OnClick
         };
 
         // Adding request to request queue
-        AppController.getInstance().addToRequestQueue(strReq, tag_json_obj);
+        //AppController.getInstance().addToRequestQueue(strReq, tag_json_obj);
     }
 
     private void showDialog() {
