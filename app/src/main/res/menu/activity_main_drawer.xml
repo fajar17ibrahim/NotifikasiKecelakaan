@@ -7,35 +7,36 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/baseline_notification_important_black_18dp"
+            android:icon="@drawable/ic_notifications_active_black_24dp"
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_gallery"
-            android:icon="@drawable/baseline_image_black_18dp"
+            android:icon="@drawable/ic_image_black_24dp"
             android:title="@string/menu_gallery" />
         <item
             android:id="@+id/nav_polisi"
-            android:icon="@drawable/baseline_image_black_18dp"
+            android:icon="@drawable/ic_local_taxi_black_24dp"
             android:title="@string/menu_polisi" />
         <item
             android:id="@+id/nav_rs"
-            android:icon="@drawable/baseline_image_black_18dp"
+            android:icon="@drawable/ic_local_hospital_black_24dp"
             android:title="@string/menu_rs" />
         <item
             android:id="@+id/nav_riwayat"
-            android:icon="@drawable/baseline_history_black_18dp"
+            android:icon="@drawable/ic_history_black_24dp"
             android:title="@string/menu_slideshow" />
-        <item
-            android:id="@+id/nav_pesan"
-            android:icon="@drawable/baseline_message_black_18dp"
-            android:title="@string/menu_tools" />
+
+<!--        <item-->
+<!--            android:id="@+id/nav_pesan"-->
+<!--            android:icon="@drawable/baseline_message_black_18dp"-->
+<!--            android:title="@string/menu_tools" />-->
         <item
             android:id="@+id/nav_share"
-            android:icon="@drawable/baseline_supervised_user_circle_black_18dp"
+            android:icon="@drawable/ic_group_black_24dp"
             android:title="@string/menu_share" />
         <item
             android:id="@+id/nav_setting"
-            android:icon="@drawable/baseline_settings_applications_black_18dp"
+            android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/menu_send" />
     </group>
 

@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,9 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView imgPhoto;
     TextView tvNama, tvTelp;
-
     SharedPreferences sharedpreferences;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +62,11 @@ public class MainActivity extends AppCompatActivity {
                 R.id.nav_riwayat, R.id.nav_pesan, R.id.nav_share, R.id.nav_setting, R.id.nav_polisi, R.id.nav_rs)
                 .setDrawerLayout(drawer)
                 .build();
+
+        View hView =  navigationView.getHeaderView(0);
+        tvNama = (TextView) hView.findViewById(R.id.tv_name);
+        tvNama.setText("hahahhaha");
+
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);

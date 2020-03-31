@@ -30,33 +30,49 @@
                 android:layout_height="wrap_content"
                 android:text="Halaman Login"
                 android:gravity="center" />
+
             <TextView
                 android:textSize="12dp"
-                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Silahkan Masukan Nomor Telepon dan Password yang sudah terdaftar"
+                android:layout_marginBottom="20dp"
+                android:text="Silahkan masukan nomor telepon dan password yang sudah terdaftar"
                 android:gravity="center" />
-            <EditText
-                android:layout_marginTop="20dp"
-                android:id="@+id/telepon"
-                android:hint="Nomor Telepon"
-                android:inputType="number"
-                android:background="@drawable/border"
-                android:padding="15dp"
-                android:textSize="12dp"
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phone_text_input_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <EditText
-                android:layout_marginTop="20dp"
-                android:id="@+id/pass"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:textSize="12dp"
-                android:background="@drawable/border"
-                android:padding="15dp"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/txt_telp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingBottom="20dp"
+                    android:textSize="14dp"
+                    android:drawablePadding="10dp"
+                    android:hint="Nomor Telepon"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/password_text_input_layout"
+                app:passwordToggleEnabled="true"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/txt_pass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingBottom="20dp"
+                    android:textSize="14dp"
+                    android:drawablePadding="10dp"
+                    android:hint="Password"
+                    android:inputType="textPassword" />
+            </com.google.android.material.textfield.TextInputLayout>
+
             <Button
                 android:id="@+id/btn_masuk"
                 android:layout_marginTop="20sp"

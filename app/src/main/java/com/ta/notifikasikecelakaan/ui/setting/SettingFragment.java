@@ -28,17 +28,8 @@ public class SettingFragment extends Fragment implements OnMapReadyCallback, Vie
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        sendViewModel =
-                ViewModelProviders.of(this).get(SettingViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_setting, container, false);
-        final TextView textView = root.findViewById(R.id.text_send);
-        sendViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
 
+        View root = inflater.inflate(R.layout.fragment_setting, container, false);
 
         return root;
     }

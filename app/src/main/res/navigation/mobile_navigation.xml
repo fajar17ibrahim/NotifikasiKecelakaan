@@ -25,13 +25,13 @@
 
     <fragment
         android:id="@+id/nav_rs"
-        android:name="com.ta.notifikasikecelakaan.ui.rs.RsFragment"
+        android:name="com.ta.notifikasikecelakaan.ui.hospital.HospitalFragment"
         android:label="@string/menu_rs"
         tools:layout="@layout/fragment_rs" />
 
     <fragment
         android:id="@+id/nav_riwayat"
-        android:name="com.ta.notifikasikecelakaan.ui.riwayat.RiwayatFragment"
+        android:name="com.ta.notifikasikecelakaan.ui.history.HistoriesFragment"
         android:label="@string/menu_history"
         tools:layout="@layout/fragment_history" />
 

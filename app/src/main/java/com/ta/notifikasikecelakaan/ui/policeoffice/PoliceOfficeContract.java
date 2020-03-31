@@ -24,7 +24,6 @@ public interface PoliceOfficeContract {
     }
 
     interface Presenter{
-        void onDestroy();
         void requestDataFromServer();
     }
 }

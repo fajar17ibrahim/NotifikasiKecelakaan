@@ -16,16 +16,11 @@ public class PoliceOfficePresenter implements PoliceOfficeContract.Presenter, Po
     }
 
     @Override
-    public void onDestroy() {
-
-    }
-
-    @Override
     public void requestDataFromServer() {
-        policeOfficeModel.getPoliceOffice(this);
         if ( policeOfficeView != null ) {
-            policeOfficeView.hideProgress();
+            policeOfficeView.showProgress();
         }
+        policeOfficeModel.getPoliceOffice(this);
     }
 
     @Override

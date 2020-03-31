@@ -12,9 +12,11 @@
         android:orientation="horizontal" >
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/logo">
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_margin="5dp"
+            android:layout_gravity="center"
+            android:src="@drawable/avatar_nurse">
         </ImageView>
 
         <LinearLayout
@@ -24,29 +26,33 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_nama"
+                android:id="@+id/tv_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:textSize="20dp"
+                android:layout_marginBottom="5dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textSize="17dp"
                 android:textStyle="bold"
-                tools:text="@string/tv_nama" />
+                tools:text="@string/text_name" />
+
             <TextView
-                android:id="@+id/tv_alamat"
+                android:id="@+id/tv_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:textSize="17dp"
+                android:textSize="14dp"
                 android:maxLines="2"
-                tools:text="@string/tv_alamat" />
+                tools:text="@string/text_address" />
+
             <TextView
-                android:id="@+id/tv_telp"
+                android:id="@+id/tv_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:textSize="17dp"
+                android:textSize="14dp"
                 android:maxLines="2"
-                tools:text="@string/tv_telp" />
+                tools:text="@string/text_phone" />
 
         </LinearLayout>
     </LinearLayout>

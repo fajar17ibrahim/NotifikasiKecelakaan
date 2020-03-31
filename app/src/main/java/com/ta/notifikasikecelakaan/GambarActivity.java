@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -24,21 +25,34 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.ta.notifikasikecelakaan.model.UploadImage;
+import com.ta.notifikasikecelakaan.network.ApiClient;
+import com.ta.notifikasikecelakaan.network.ApiInterface;
+import com.ta.notifikasikecelakaan.utils.ApiUtils;
+import com.ta.notifikasikecelakaan.utils.Constans;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GambarActivity extends AppCompatActivity implements View.OnClickListener {
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class GambarActivity extends AppCompatActivity implements View.OnClickListener  {
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001;
-    private String url = Server.URL + "upload_gambar.php";
     private Uri image_uri;
     String tag_json_obj = "json_obj_req";
     ProgressDialog pDialog;
@@ -84,7 +98,7 @@ public class GambarActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View v) {
                 uploadImage();
-                Toast.makeText(GambarActivity.this, "Gambar Berhasil Diupload", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(GambarActivity.this, "Gambar Berhasil Diupload", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -123,58 +137,55 @@ public class GambarActivity extends AppCompatActivity implements View.OnClickLis
         //called when image was captured from camera
         if(resultCode == RESULT_OK) {
             imgView.setImageURI(image_uri);
-//            image_uri = data.getData();
-//            try {
-//                InputStream inputStream = getContentResolver().openInputStream(image_uri);
-//                bitmap = BitmapFactory.decodeStream(inputStream);
-//                imgView.setImageBitmap(bitmap);
-////                imgView.setVisibility(View.VISIBLE);
-////                btnUpload.setVisibility(View.VISIBLE);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            Toast.makeText(GambarActivity.this, "o", Toast.LENGTH_SHORT).show();
+            image_uri = data.getData();
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(image_uri);
+                bitmap = BitmapFactory.decodeStream(inputStream);
+                imgView.setImageBitmap(bitmap);
+                imgView.setVisibility(View.VISIBLE);
+                btnUpload.setVisibility(View.VISIBLE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Toast.makeText(GambarActivity.this, "o", Toast.LENGTH_SHORT).show();
         }
-//        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
     }
-
 
     private void uploadImage(){
         pDialog = new ProgressDialog(this);
         pDialog.setCancelable(false);
-        pDialog.setMessage("Logging in ...");
-        showDialog();
+        String mediaPath = null;
+        File file = new File(mediaPath);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
+        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
+
+        ApiInterface getResponse = ApiClient.getClient(ApiUtils.BASE_URL_API).create(ApiInterface.class);
+        Call call = getResponse.upload(fileToUpload, filename);
+        call.enqueue(new Callback() {
             @Override
-            public void onResponse(String response) {
-                hideDialog();
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    String Response = jsonObject.getString("response");
-                    Toast.makeText(getApplicationContext(), Response, Toast.LENGTH_LONG).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            public void onResponse(Call call, Response response) {
+                UploadImage serverResponse = (UploadImage) response.body();
+                if ( serverResponse != null ) {
+                    if ( serverResponse.isSuccess()) {
+                        Toast.makeText(getApplicationContext(), serverResponse.getMessage(),Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), serverResponse.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    assert serverResponse != null;
+                    Log.v("Response ", serverResponse.toString());
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), "error: " + error.toString(), Toast.LENGTH_LONG).show();
                 hideDialog();
             }
-        })
-        {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                String gambar = imagetoString(bitmap);
-                params.put("foto", gambar);
-                return params;
-            }
-        };
 
-        //AppController.getInstance().addToRequestQueue(stringRequest, tag_json_obj);
+            @Override
+            public void onFailure(Call call, Throwable t) {
+
+            }
+        });
     }
 
     private String imagetoString(Bitmap bitmap)

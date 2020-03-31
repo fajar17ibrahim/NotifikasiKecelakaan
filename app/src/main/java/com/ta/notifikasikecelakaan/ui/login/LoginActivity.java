@@ -63,8 +63,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnMasuk.setOnClickListener(this);
         tvRegistrasi = findViewById(R.id.registrasi);
         tvRegistrasi.setOnClickListener(this);
-        txt_telp = (EditText) findViewById(R.id.telepon);
-        txt_password = (EditText) findViewById(R.id.pass);
+        txt_telp = (EditText) findViewById(R.id.txt_telp);
+        txt_password = (EditText) findViewById(R.id.txt_pass);
 
         // Cek session login jika TRUE maka langsung buka MainActivity
 //        sharedpreferences = getSharedPreferences(my_shared_preferences, Context.MODE_PRIVATE);

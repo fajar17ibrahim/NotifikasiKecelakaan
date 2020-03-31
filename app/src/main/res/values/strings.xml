@@ -22,9 +22,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="tv_lokasi">Lokasi</string>
-    <string name="tv_waktu">Waktu</string>
-    <string name="tv_keterangan">Keterangan</string>
+    <string name="tv_lokasi">No Location</string>
+    <string name="tv_waktu">No Time</string>
+    <string name="tv_keterangan">No Address</string>
     <string name="menu_history">Histori</string>
     <string name="menu_pesan">Pesan</string>
     <string name="tv_judul">Judul</string>
@@ -37,4 +37,6 @@
     <string name="text_name">No Name</string>
     <string name="text_address">No Address</string>
     <string name="text_phone">No Phone</string>
+    <string name="text_time">No Time</string>
+    <string name="text_share">Ajak teman untuk menggunakan \naplikasi notifikasi kecelakaan untuk mendapatkan\ninformasi terjadinya kecelakaan disekitar.</string>
 </resources>
