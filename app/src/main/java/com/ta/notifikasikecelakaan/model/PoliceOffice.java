@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class PoliceOffice {
 
-    @SerializedName("id")
-    private int id;
+    @SerializedName("policeoffice_id")
+    private String policeoffice_id;
 
     @SerializedName("name")
     private String name;
@@ -22,12 +22,12 @@ public class PoliceOffice {
     @SerializedName("longitude")
     private double longitude;
 
-    public int getId() {
-        return id;
+    public String getPoliceoffice_id() {
+        return policeoffice_id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setPoliceoffice_id(String policeoffice_id) {
+        this.policeoffice_id = policeoffice_id;
     }
 
     public String getName() {
@@ -70,8 +70,8 @@ public class PoliceOffice {
         this.longitude = longitude;
     }
 
-    public PoliceOffice(int id, String name, String address, String phone, double latitude, double longitude) {
-        this.id = id;
+    public PoliceOffice(String policeoffice_id, String name, String address, String phone, double latitude, double longitude) {
+        this.policeoffice_id = policeoffice_id;
         this.name = name;
         this.address = address;
         this.phone = phone;

@@ -42,22 +42,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView tvRegistrasi;
     private EditText txt_telp, txt_password;
 
+    private Boolean session = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mContext = this;
 
-//        conMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        {
-//            if (conMgr.getActiveNetworkInfo() != null
-//                    && conMgr.getActiveNetworkInfo().isAvailable()
-//                    && conMgr.getActiveNetworkInfo().isConnected()) {
-//            } else {
-//                Toast.makeText(getApplicationContext(), "No Internet Connection",
-//                        Toast.LENGTH_LONG).show();
-//            }
-//        }
+        // Cek session login jika TRUE maka langsung buka MainActivity
+        sharedPreferences = getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        session = sharedPreferences.getBoolean(Constans.TAG_SESSION, false);
+
+        if (session) {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
 
         Button btnMasuk = findViewById(R.id.btn_masuk);
         btnMasuk.setOnClickListener(this);
@@ -65,23 +65,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         tvRegistrasi.setOnClickListener(this);
         txt_telp = (EditText) findViewById(R.id.txt_telp);
         txt_password = (EditText) findViewById(R.id.txt_pass);
-
-        // Cek session login jika TRUE maka langsung buka MainActivity
-//        sharedpreferences = getSharedPreferences(my_shared_preferences, Context.MODE_PRIVATE);
-//        session = sharedpreferences.getBoolean(session_status, false);
-//
-//        cek = sharedpreferences.getInt(TAG_CEK, 0);
-//        id = sharedpreferences.getString(TAG_ID, null);
-//        telp = sharedpreferences.getString(TAG_TELP, null);
-//
-//        if (session) {
-//            Intent intent = new Intent(LoginActivity.this, KendaraanActivity.class);
-//            intent.putExtra(TAG_ID, id);
-//            intent.putExtra(TAG_TELP, telp);
-//            intent.putExtra(TAG_CEK, cek);
-//            finish();
-//            startActivity(intent);
-//        }
     }
 
     @Override
@@ -99,9 +82,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // mengecek kolom yang kosong
                 if (phone.trim().length() > 0 && password.trim().length() > 0) {
                     loading = ProgressDialog.show(mContext, null, "Harap Tunggu...", true, false);
-                        requestLogin(phone, password);
+                    requestLogin(phone, password);
                 } else {
-                        Toast.makeText(getApplicationContext() ,"Field tidak boleh kosong", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext() ,"Field tidak boleh kosong", Toast.LENGTH_LONG).show();
                 }
 
                 break;
@@ -112,51 +95,51 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Log.d("Result ", phone + " "+ password);
         mApiService = ApiUtils.getAPIService();
         mApiService.requestLogin(phone, password)
-                .enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.isSuccessful()){
-                            loading.dismiss();
-                            try {
-                                JSONObject jsonRESULTS = new JSONObject(response.body().string());
-                                if (jsonRESULTS.getString("success").equals("1")){
-                                    // Jika login berhasil maka data nama yang ada di response API
-                                    String name = jsonRESULTS.getString("name");
-                                    Toast.makeText(mContext, "Selamat Datang  " + name, Toast.LENGTH_SHORT).show();
-                                    String id = jsonRESULTS.getString("id");
-                                    String token = jsonRESULTS.getString("token");
-                                    sharedPreferences = getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                    editor.putString(Constans.TAG_ID_RESPONDENT, id);
-                                    editor.putString(Constans.TAG_TOKEN, token);
-                                    editor.putBoolean(Constans.TAG_SESSION, true);
-                                    editor.apply();
+            .enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful()){
+                        loading.dismiss();
+                        try {
+                            JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                            if (jsonRESULTS.getString("success").equals("1")){
+                                // Jika login berhasil maka data nama yang ada di response API
+                                String name = jsonRESULTS.getString("name");
+                                Toast.makeText(mContext, "Selamat Datang  " + name, Toast.LENGTH_SHORT).show();
+                                String id = jsonRESULTS.getString("id");
+                                String token = jsonRESULTS.getString("token");
+                                sharedPreferences = getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString(Constans.TAG_ID_RESPONDENT, id);
+                                editor.putString(Constans.TAG_TOKEN, token);
+                                editor.putBoolean(Constans.TAG_SESSION, true);
+                                editor.apply();
 
-                                    Intent intent = new Intent(mContext, MainActivity.class);
-                                    startActivity(intent);
-                                } else {
-                                    // Jika login gagal
-                                    String error_message = jsonRESULTS.getString("message");
-                                    Toast.makeText(mContext, error_message, Toast.LENGTH_SHORT).show();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                                Intent intent = new Intent(mContext, MainActivity.class);
+                                startActivity(intent);
+                            } else {
+                                // Jika login gagal
+                                String error_message = jsonRESULTS.getString("message");
+                                Toast.makeText(mContext, error_message, Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            Toast.makeText(mContext, "Login Gagal! Coba lagi", Toast.LENGTH_SHORT).show();
-                            loading.dismiss();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        Log.e("debug", "onFailure: ERROR > " + t.getMessage());
-                        Toast.makeText(mContext, "Koneksi Internet Bermasalah", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, "Login Gagal! Coba lagi", Toast.LENGTH_SHORT).show();
                         loading.dismiss();
                     }
-                });
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    Log.e("debug", "onFailure: ERROR > " + t.getMessage());
+                    Toast.makeText(mContext, "Koneksi Internet Bermasalah", Toast.LENGTH_SHORT).show();
+                    loading.dismiss();
+                }
+            });
     }
 
 }

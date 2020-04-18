@@ -22,23 +22,30 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.setting.editprofile.EditProfileActivity"></activity>
+        <activity android:name=".ui.policeofficelocation.PoliceOfficeLocationActivity"></activity>
+        <activity android:name=".ui.policeofficelocation.PoliceOfficeLocationActivity1" />
+        <activity android:name=".ui.hostipallocation.HospitalLocationActivity" />
+        <activity android:name=".ui.setting.editpassword.EditPasswordActivity" />
+        <activity android:name=".ui.setting.editprofile.EditProfileActivity" />
         <activity android:name=".ui.login.LoginActivity" />
         <activity android:name=".ui.register.RegistrasiActivity" />
-        <activity android:name=".ui.gallery_details.GalleryDetailsActivity" />
-        <activity android:name=".GambarActivity" />
+        <activity android:name=".ui.gallerydetails.GalleryDetailsActivity" />
+        <activity android:name=".ui.takephoto.GambarActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".PermissionActivity" />
-        <activity android:name=".Splash">
+        <activity android:name=".ui.permission.PermissionActivity" />
+        <activity android:name=".ui.splash.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- Maps Android Key -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAiCKvJcTu95NxXaqUwAE2ntEITNzoCmPk" />

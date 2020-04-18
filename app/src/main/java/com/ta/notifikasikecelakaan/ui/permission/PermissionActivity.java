@@ -1,8 +1,7 @@
-package com.ta.notifikasikecelakaan;
+package com.ta.notifikasikecelakaan.ui.permission;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
@@ -22,6 +21,8 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.ta.notifikasikecelakaan.MainActivity;
+import com.ta.notifikasikecelakaan.R;
 
 public class PermissionActivity extends AppCompatActivity {
     private Button btnGrant;

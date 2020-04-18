@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class Hospital {
 
     @SerializedName("hospital_id")
-    private int hospital_id;
+    private String hospital_id;
 
     @SerializedName("name")
     private String name;
@@ -22,11 +22,11 @@ public class Hospital {
     @SerializedName("longitude")
     private double longitude;
 
-    public int getHospital_id() {
+    public String getHospital_id() {
         return hospital_id;
     }
 
-    public void setHospital_id(int hospital_id) {
+    public void setHospital_id(String hospital_id) {
         this.hospital_id = hospital_id;
     }
 
@@ -70,7 +70,7 @@ public class Hospital {
         this.longitude = longitude;
     }
 
-    public Hospital(int hospital_id, String name, String address, String phone, double latitude, double longitude) {
+    public Hospital(String hospital_id, String name, String address, String phone, double latitude, double longitude) {
         this.hospital_id = hospital_id;
         this.name = name;
         this.address = address;

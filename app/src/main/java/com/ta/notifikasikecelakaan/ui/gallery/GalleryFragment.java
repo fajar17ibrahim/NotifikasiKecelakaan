@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.adapter.ListGalleryAdapter;
 import com.ta.notifikasikecelakaan.model.Gallery;
-import com.ta.notifikasikecelakaan.ui.gallery_details.GalleryDetailsActivity;
+import com.ta.notifikasikecelakaan.ui.gallerydetails.GalleryDetailsActivity;
 import com.ta.notifikasikecelakaan.utils.Constans;
 
 import java.util.ArrayList;
@@ -65,7 +65,6 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
     }
 
     private void showSelectedGallery(Gallery data) {
-        Toast.makeText(getActivity(), "Kamu memilih " + data.getName(), Toast.LENGTH_SHORT).show();
         Intent iViewGambar = new Intent(getActivity(), GalleryDetailsActivity.class);
         iViewGambar.putExtra(Constans.TAG_GALLERY_ID, data.getGallery_id());
         startActivity(iViewGambar);

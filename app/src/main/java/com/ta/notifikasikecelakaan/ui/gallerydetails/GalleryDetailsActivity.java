@@ -1,4 +1,4 @@
-package com.ta.notifikasikecelakaan.ui.gallery_details;
+package com.ta.notifikasikecelakaan.ui.gallerydetails;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,6 +22,8 @@ public class GalleryDetailsActivity extends AppCompatActivity implements Gallery
     private GalleryDetailsPresenter galleryDetailsPresenter;
     private ProgressBar pbLoading;
 
+    private String galleryId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,12 +33,19 @@ public class GalleryDetailsActivity extends AppCompatActivity implements Gallery
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         pbLoading = (ProgressBar) findViewById(R.id.pb_loading);
 
-//        int id = Integer.parseInt(getIntent().getStringExtra(Constans.TAG_GALLERY_ID));
+        galleryId = getIntent().getStringExtra(Constans.TAG_GALLERY_ID);
 
         galleryDetailsPresenter = new GalleryDetailsPresenter(this);
-        galleryDetailsPresenter.requestDataFromServer(31235);
+        galleryDetailsPresenter.requestDataFromServer(galleryId);
      }
 
     @Override
@@ -57,12 +66,12 @@ public class GalleryDetailsActivity extends AppCompatActivity implements Gallery
                 .apply(new RequestOptions().override(300, 200))
                 .into(imgGambar);
         TextView tvKeterangan = (TextView) findViewById(R.id.tv_keterangan);
-        tvKeterangan.setText("Gambar ini diambil "+ gallery.getName() +" di lokasi kecelakaan jam "+ gallery.getCreated_at() +" WIB.");
+        tvKeterangan.setText("Gambar ini diambil oleh "+ gallery.getName() +" di lokasi kecelakaan tanggal "+ gallery.getCreated_at() +" WIB.");
     }
 
     @Override
     public void onResponseFailure(Throwable throwable) {
         Log.d("Error ", throwable.toString());
-        Toast.makeText(this, "Data gagal dimuat.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Data gagal dimuat." +throwable.toString(), Toast.LENGTH_LONG).show();
     }
 }

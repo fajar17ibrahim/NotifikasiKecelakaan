@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 public class Gallery {
 
     @SerializedName("gallery_id")
-    private int gallery_id;
+    private String gallery_id;
 
     @SerializedName("created_at")
     private String created_at;
@@ -16,11 +16,11 @@ public class Gallery {
     @SerializedName("name")
     private String name;
 
-    public int getGallery_id() {
+    public String getGallery_id() {
         return gallery_id;
     }
 
-    public void setGallery_id(int gallery_id) {
+    public void setGallery_id(String gallery_id) {
         this.gallery_id = gallery_id;
     }
 
@@ -48,7 +48,7 @@ public class Gallery {
         this.name = name;
     }
 
-    public Gallery(int gallery_id, String created_at, String image, String name) {
+    public Gallery(String gallery_id, String created_at, String image, String name) {
         this.gallery_id = gallery_id;
         this.created_at = created_at;
         this.image = image;

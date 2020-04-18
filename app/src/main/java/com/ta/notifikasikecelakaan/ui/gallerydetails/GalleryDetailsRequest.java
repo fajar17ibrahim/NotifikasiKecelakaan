@@ -1,4 +1,4 @@
-package com.ta.notifikasikecelakaan.ui.gallery_details;
+package com.ta.notifikasikecelakaan.ui.gallerydetails;
 
 import android.util.Log;
 
@@ -13,10 +13,10 @@ import retrofit2.Response;
 
 public class GalleryDetailsRequest implements GalleryDetailsContract.Model {
     @Override
-    public void getGallery(final OnFinishedListener onFinishedListener, int galleryId) {
+    public void getGallery(final OnFinishedListener onFinishedListener, String galleryId) {
         ApiInterface apiInterface = ApiClient.getClient(ApiUtils.BASE_URL_API).create(ApiInterface.class);
 
-        Call<Gallery> call = apiInterface.getGalleryDetail(31234);
+        Call<Gallery> call = apiInterface.getGalleryDetail(galleryId);
         call.enqueue(new Callback<Gallery>() {
             @Override
             public void onResponse(Call<Gallery> call, Response<Gallery> response) {

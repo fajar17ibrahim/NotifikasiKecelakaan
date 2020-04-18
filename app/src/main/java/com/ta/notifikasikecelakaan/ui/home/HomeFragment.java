@@ -30,29 +30,35 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.ta.notifikasikecelakaan.GambarActivity;
+import com.ta.notifikasikecelakaan.directionhelpers.FetchURL;
+import com.ta.notifikasikecelakaan.ui.takephoto.GambarActivity;
 import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.ui.gallery.GalleryFragment;
+import com.ta.notifikasikecelakaan.utils.Constans;
 
 import static android.content.Context.LOCATION_SERVICE;
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener {
+public class HomeFragment extends Fragment implements OnMapReadyCallback, View.OnClickListener, TaskLoadedCallback {
 
     private HomeViewModel homeViewModel;
-    GoogleMap mGoogleMap;
+    private GoogleMap mGoogleMap;
     private LocationListener locationListener;
     private LocationManager locationManager;
-    MapView mapView;
+    private MapView mapView;
 
     private MarkerOptions place1, place2;
 
     private final long MIN_TIME = 1000;
     private final long MIN_DIST = 100;
-    String telp = "112";
+    private String telp = "112";
 
     private LatLng latLng;
+
+    private Polyline currentPolyline;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -97,6 +103,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, View.O
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Mencari Rute...", Toast.LENGTH_SHORT).show();
+                new FetchURL(getActivity()).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
             }
         });
 
@@ -137,8 +144,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, View.O
             mapView.getMapAsync(this);
         }
 
-//        place1 = new MarkerOptions().position(new LatLng(-7.283163,112.788902)).title("Lokasi Ku");
-//        place2 = new MarkerOptions().position(new LatLng(-7.268414, 112.783431)).title("Lokasi Kecelakaan");
+        place1 = new MarkerOptions().position(new LatLng(-7.809385, 113.387259)).title("Lokasi Ku");
+        place2 = new MarkerOptions().position(new LatLng(-7.761063, 113.416305)).title("Lokasi Kecelakaan");
 /*
         String url = getUrl(place1.getPosition(), place2.getPosition(), "Driving");
         new FetchURL(MainActivity.this).execute(url, "driving");*/
@@ -158,80 +165,40 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, View.O
         mGoogleMap.setMyLocationEnabled(true);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
 
-        /*if(mapView != null && mapView.findViewById(Integer.parseInt("1")) != null) {
-            View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            layoutParams.setMargins(0,0,40,180);
-        }*/
-
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(-7.2755979, 112.572597)));
-        CameraPosition Surabaya = CameraPosition.builder().target(new LatLng(-7.2755979, 112.572597)).zoom(14).bearing(0).tilt(45).build();
+        googleMap.addMarker(place2);
+        CameraPosition Surabaya = CameraPosition.builder().target(new LatLng(-7.761063, 113.416305)).zoom(14).bearing(0).tilt(45).build();
         googleMap.moveCamera((CameraUpdateFactory.newCameraPosition(Surabaya)));
 
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                try {
-                    latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    //mGoogleMap.addMarker(new MarkerOptions().position(latLng).title("Lokasi Saya").snippet("I hope to go"));
-                    CameraPosition Surabaya = CameraPosition.builder().target(latLng).zoom(14).bearing(0).tilt(45).build();
-                    mGoogleMap.moveCamera((CameraUpdateFactory.newCameraPosition(Surabaya)));
 
-                } catch (SecurityException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-
-        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-
-        try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,MIN_TIME, MIN_DIST, locationListener);
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     public void onClick(View v) {
 
     }
-/*
+
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
         // Origin of route
-        String str_origin = "origin" + origin.latitude + "," + origin.longitude;
-        //Destination of Route
-        String str_dest = "destination" + dest.latitude + "," + dest.longitude;
-        //Mode
-        String mode = "mode" + directionMode;
-        //Building the parameters to the web service
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        // Mode
+        String mode = "mode=" + directionMode;
+        // Building the parameters to the web service
         String parameters = str_origin + "&" + str_dest + "&" + mode;
-        //Output format
+        // Output format
         String output = "json";
-        //Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.API_KEY);
         return url;
     }
 
-    public void onTaskDone*/
 
-
+    @Override
+    public void onTaskDone(Object... values) {
+        if (currentPolyline != null)
+            currentPolyline.remove();
+        currentPolyline = mGoogleMap.addPolyline((PolylineOptions) values[0]);
+    }
 }

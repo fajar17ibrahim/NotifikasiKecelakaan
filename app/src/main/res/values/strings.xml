@@ -3,13 +3,13 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Muhammad Fajar Ibrahim</string>
-    <string name="nav_header_subtitle">085232689830</string>
+    <string name="nav_header_title">No Name</string>
+    <string name="nav_header_subtitle">No Phone</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Notifikasi Kecelakaan</string>
-    <string name="menu_gallery">Galery</string>
+    <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Riwayat Kecelakaan</string>
     <string name="menu_tools">Pesan</string>
     <string name="menu_share">Undang Teman</string>
@@ -25,7 +25,7 @@
     <string name="tv_lokasi">No Location</string>
     <string name="tv_waktu">No Time</string>
     <string name="tv_keterangan">No Address</string>
-    <string name="menu_history">Histori</string>
+    <string name="menu_history">Riwayat Kecelakaan</string>
     <string name="menu_pesan">Pesan</string>
     <string name="tv_judul">Judul</string>
     <string name="tv_isi">Isi</string>
@@ -39,4 +39,5 @@
     <string name="text_phone">No Phone</string>
     <string name="text_time">No Time</string>
     <string name="text_share">Ajak teman untuk menggunakan \naplikasi notifikasi kecelakaan untuk mendapatkan\ninformasi terjadinya kecelakaan disekitar.</string>
+    <string name="API_KEY">AIzaSyAiCKvJcTu95NxXaqUwAE2ntEITNzoCmPk</string>
 </resources>

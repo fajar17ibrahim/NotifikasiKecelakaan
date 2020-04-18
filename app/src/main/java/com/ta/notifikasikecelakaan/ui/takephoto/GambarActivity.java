@@ -1,4 +1,4 @@
-package com.ta.notifikasikecelakaan;
+package com.ta.notifikasikecelakaan.ui.takephoto;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,25 +23,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.model.UploadImage;
 import com.ta.notifikasikecelakaan.network.ApiClient;
 import com.ta.notifikasikecelakaan.network.ApiInterface;
 import com.ta.notifikasikecelakaan.utils.ApiUtils;
-import com.ta.notifikasikecelakaan.utils.Constans;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;

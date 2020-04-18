@@ -15,34 +15,37 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
+import com.ta.notifikasikecelakaan.model.Respondent;
 import com.ta.notifikasikecelakaan.ui.login.LoginActivity;
+import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfileContract;
+import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfilePresenter;
+import com.ta.notifikasikecelakaan.utils.Constans;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
-
-    private static final int PERMISSION_CODE = 1000;
-    private static final int IMAGE_CAPTURE_CODE = 1001;
-    private Uri image_uri;
+public class MainActivity extends AppCompatActivity implements ProfileContract.View {
 
     private AppBarConfiguration mAppBarConfiguration;
 
-    private final long MIN_TIME = 1000;
-    private final long MIN_DIST = 5;
-    public static final String TAG_ID = "id_user";
-    public static final String TAG_TELP = "telp_user";
+    private TextView tvNama, tvTelp;
+    private SharedPreferences sharedpreferences;
+    private ProfilePresenter profilePresenter;
 
-    ImageView imgPhoto;
-    TextView tvNama, tvTelp;
-    SharedPreferences sharedpreferences;
+    private NavigationView navigationView;
+    private View hView;
+
+    private String idRespondent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,22 +54,21 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        sharedpreferences = getSharedPreferences(LoginActivity.my_shared_preferences, Context.MODE_PRIVATE);
+        sharedpreferences = getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        idRespondent = sharedpreferences.getString(Constans.TAG_ID_RESPONDENT, "id");
+
+        profilePresenter = new ProfilePresenter(this);
+        profilePresenter.requestDataFromServer(idRespondent);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_home, R.id.nav_gallery,
                 R.id.nav_riwayat, R.id.nav_pesan, R.id.nav_share, R.id.nav_setting, R.id.nav_polisi, R.id.nav_rs)
                 .setDrawerLayout(drawer)
                 .build();
-
-        View hView =  navigationView.getHeaderView(0);
-        tvNama = (TextView) hView.findViewById(R.id.tv_name);
-        tvNama.setText("hahahhaha");
-
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -95,4 +97,30 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void setDataToView(Respondent respondent) {
+        hView =  navigationView.getHeaderView(0);
+        tvNama = (TextView) hView.findViewById(R.id.tv_name);
+        tvTelp = (TextView) hView.findViewById(R.id.tv_telp);
+
+        tvNama.setText(respondent.getName());
+        tvTelp.setText(respondent.getPhone());
+    }
+
+    @Override
+    public void onResponseFailure(Throwable throwable) {
+        Log.d("Error ", throwable.toString());
+        Toast.makeText(this, "Data gagal dimuat.", Toast.LENGTH_LONG).show();
+    }
 }

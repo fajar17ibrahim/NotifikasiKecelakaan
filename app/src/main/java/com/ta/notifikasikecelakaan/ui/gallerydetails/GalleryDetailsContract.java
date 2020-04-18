@@ -1,4 +1,4 @@
-package com.ta.notifikasikecelakaan.ui.gallery_details;
+package com.ta.notifikasikecelakaan.ui.gallerydetails;
 
 import com.ta.notifikasikecelakaan.model.Gallery;
 
@@ -10,7 +10,7 @@ public interface GalleryDetailsContract {
             void onFailure(Throwable t);
         }
 
-        void getGallery(OnFinishedListener onFinishedListener, int galleryId);
+        void getGallery(OnFinishedListener onFinishedListener, String galleryId);
 
     }
 
@@ -22,6 +22,6 @@ public interface GalleryDetailsContract {
     }
 
     interface Presenter{
-        void requestDataFromServer(int galleryId);
+        void requestDataFromServer(String galleryId);
     }
 }

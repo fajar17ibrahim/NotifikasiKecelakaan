@@ -1,6 +1,6 @@
 package com.ta.notifikasikecelakaan.ui.policeoffice;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.adapter.ListPoliceOfficeAdapter;
 import com.ta.notifikasikecelakaan.model.PoliceOffice;
+import com.ta.notifikasikecelakaan.ui.policeofficelocation.PoliceOfficeLocationActivity;
+import com.ta.notifikasikecelakaan.utils.Constans;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +86,8 @@ public class PoliceOfficeFragment extends Fragment implements PoliceOfficeContra
     }
 
     private void showSelectedPesan(PoliceOffice data) {
-        Toast.makeText(getActivity(), "Kamu memilih " + data.getName(), Toast.LENGTH_SHORT).show();
+        Intent iPoliceOfficeLocation = new Intent(getActivity(), PoliceOfficeLocationActivity.class);
+        iPoliceOfficeLocation.putExtra(Constans.TAG_POLICEOFFICE_ID, data.getPoliceoffice_id());
+        startActivity(iPoliceOfficeLocation);
     }
 }

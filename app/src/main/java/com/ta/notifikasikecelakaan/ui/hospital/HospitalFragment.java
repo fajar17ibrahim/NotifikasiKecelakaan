@@ -1,5 +1,6 @@
 package com.ta.notifikasikecelakaan.ui.hospital;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.adapter.ListHospitalsAdapter;
 import com.ta.notifikasikecelakaan.model.Hospital;
+import com.ta.notifikasikecelakaan.ui.hostipallocation.HospitalLocationActivity;
+import com.ta.notifikasikecelakaan.utils.Constans;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +64,9 @@ public class HospitalFragment extends Fragment implements HospitalContract.View 
     }
 
     private void showSelectedPesan(Hospital data) {
-        Toast.makeText(getActivity(), "Kamu memilih " + data.getName(), Toast.LENGTH_SHORT).show();
+        Intent iHospitalLocation = new Intent(getActivity(), HospitalLocationActivity.class);
+        iHospitalLocation.putExtra(Constans.TAG_HOSPITAL_ID, data.getHospital_id());
+        startActivity(iHospitalLocation);
     }
 
     @Override

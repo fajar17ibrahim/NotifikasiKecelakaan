@@ -1,4 +1,4 @@
-package com.ta.notifikasikecelakaan;
+package com.ta.notifikasikecelakaan.ui.splash;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
+import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.ui.login.LoginActivity;
 
 public class Splash extends AppCompatActivity {

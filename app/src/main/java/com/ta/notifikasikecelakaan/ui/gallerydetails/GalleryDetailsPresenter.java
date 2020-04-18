@@ -1,4 +1,4 @@
-package com.ta.notifikasikecelakaan.ui.gallery_details;
+package com.ta.notifikasikecelakaan.ui.gallerydetails;
 
 import com.ta.notifikasikecelakaan.model.Gallery;
 
@@ -30,7 +30,7 @@ public class GalleryDetailsPresenter implements GalleryDetailsContract.Presenter
     }
 
     @Override
-    public void requestDataFromServer(int galleryId) {
+    public void requestDataFromServer(String galleryId) {
         if ( galleryDetailsView != null ) {
             galleryDetailsView.showProgress();
         }
