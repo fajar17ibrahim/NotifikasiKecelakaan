@@ -5,7 +5,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.core.app.ActivityCompat;
@@ -14,9 +13,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.navigation.NavigationView;
+import com.ta.notifikasikecelakaan.directionhelpers.TaskLoadedCallback;
 import com.ta.notifikasikecelakaan.model.Respondent;
-import com.ta.notifikasikecelakaan.ui.login.LoginActivity;
+import com.ta.notifikasikecelakaan.ui.home.HomeFragment;
 import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfileContract;
 import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfilePresenter;
 import com.ta.notifikasikecelakaan.utils.Constans;
@@ -29,12 +32,10 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements ProfileContract.View {
+public class MainActivity extends AppCompatActivity implements TaskLoadedCallback, ProfileContract.View {
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -46,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements ProfileContract.V
     private View hView;
 
     private String idRespondent;
+    private GoogleMap mMap;
+    private Polyline currentPolyline;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,5 +126,12 @@ public class MainActivity extends AppCompatActivity implements ProfileContract.V
     public void onResponseFailure(Throwable throwable) {
         Log.d("Error ", throwable.toString());
         Toast.makeText(this, "Data gagal dimuat.", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onTaskDone(Object... values) {
+        if (   currentPolyline != null)
+            currentPolyline.remove();
+        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
     }
 }

@@ -1,19 +1,14 @@
-package com.ta.notifikasikecelakaan.ui.hostipallocation;
+package com.ta.notifikasikecelakaan.ui.notification;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,7 +18,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -32,30 +26,26 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.directionhelpers.FetchURL;
 import com.ta.notifikasikecelakaan.directionhelpers.TaskLoadedCallback;
-import com.ta.notifikasikecelakaan.model.Hospital;
-import com.ta.notifikasikecelakaan.ui.policeofficelocation.PoliceOfficeLocationPresenter;
-import com.ta.notifikasikecelakaan.utils.Constans;
+import com.ta.notifikasikecelakaan.model.Accident;
+import com.ta.notifikasikecelakaan.ui.home.HomeContract;
+import com.ta.notifikasikecelakaan.ui.home.HomePresenter;
 
-public class HospitalLocationActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, HospitalLocationContract.View, View.OnClickListener {
+public class NotificationActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, HomeContract.View {
 
     private GoogleMap mMap;
 
     private MapView mapView;
     private MarkerOptions place1, place2;
-    private Button getDirection;
-    private FloatingActionButton btnCurrentLocation;
     private Polyline currentPolyline;
     private CameraPosition Current;
 
-    private HospitalLocationPresenter hospitalLocationPresenter;
+    private HomePresenter homePresenter;
 
     private TextView tvName, tvAddress;
     private ProgressBar pbLoading;
-    private String idHospital;
 
     private int height = 100;
     private int width = 86;
@@ -65,22 +55,14 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_hospital_location);
+        setContentView(R.layout.activity_notification);
 
         tvName = (TextView) findViewById(R.id.txt_name);
         tvAddress = (TextView) findViewById(R.id.txt_address);
         pbLoading = (ProgressBar) findViewById(R.id.pb_loading);
 
-        idHospital = getIntent().getStringExtra(Constans.TAG_HOSPITAL_ID);
-
-        hospitalLocationPresenter = new HospitalLocationPresenter(this);
-        hospitalLocationPresenter.requestDataFromServer(idHospital);
-
-        getDirection = findViewById(R.id.btnGetDirection);
-        getDirection.setOnClickListener(this);
-
-        btnCurrentLocation = (FloatingActionButton) findViewById(R.id.btn_current_location);
-        btnCurrentLocation.setOnClickListener(this);
+        homePresenter =  new HomePresenter(this);
+        homePresenter.requestDataFromServer();
 
     }
 
@@ -92,8 +74,8 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
         mMap.addMarker(place1);
         mMap.addMarker(place2);
 
-        CameraPosition Surabaya = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(13).bearing(0).tilt(0).build();
-        mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Surabaya)));
+        CameraPosition cameraPosition = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(13).bearing(0).tilt(0).build();
+        mMap.moveCamera((CameraUpdateFactory.newCameraPosition(cameraPosition)));
     }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
@@ -130,13 +112,12 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
     }
 
     @Override
-    public void setDataToView(Hospital hospital) {
-
+    public void setDataToView(Accident accident) {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(hospital.getName());
+        getSupportActionBar().setTitle(accident.getAddress());
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,8 +126,8 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
             }
         });
 
-        tvName.setText(hospital.getName());
-        tvAddress.setText(hospital.getAddress());
+        //tvName.setText(policeOffice.getName());
+        tvAddress.setText(accident.getAddress());
 
         mapView = (MapView) findViewById(R.id.map);
         if(mapView != null) {
@@ -179,39 +160,27 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
             }
         });
 
-        latitude2 = hospital.getLatitude();
-        longitude2 = hospital.getLongitude();
+        latitude2 = accident.getLatitude();
+        longitude2 = accident.getLongitude();
+
+        BitmapDrawable bitmapdrawrespondent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
+        Bitmap brespondent = bitmapdrawrespondent.getBitmap();
+        Bitmap marker_respondent = Bitmap.createScaledBitmap(brespondent, width, height, false);
 
         BitmapDrawable bitmapdrawuser = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker);
         Bitmap buser = bitmapdrawuser.getBitmap();
         Bitmap marker_user = Bitmap.createScaledBitmap(buser, width, height, false);
 
-        BitmapDrawable bitmapdrawhospital = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_hospital);
-        Bitmap bhospital = bitmapdrawhospital.getBitmap();
-        Bitmap marker_hospital = Bitmap.createScaledBitmap(bhospital, width, height, false);
+        place1 = new MarkerOptions().position(new LatLng(-7.254542, 112.748604)).icon(BitmapDescriptorFactory.fromBitmap(marker_respondent));
+        place2 = new MarkerOptions().position(new LatLng(latitude2, longitude2)).icon(BitmapDescriptorFactory.fromBitmap(marker_user));
 
-        place1 = new MarkerOptions().position(new LatLng(-7.254542, 112.748604)).icon(BitmapDescriptorFactory.fromBitmap(marker_user));
-        place2 = new MarkerOptions().position(new LatLng(latitude2, longitude2)).icon(BitmapDescriptorFactory.fromBitmap(marker_hospital));
+        new FetchURL(NotificationActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
 
-        new FetchURL(HospitalLocationActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
     }
 
     @Override
     public void onResponseFailure(Throwable throwable) {
         Log.d("Error ", throwable.toString());
         Toast.makeText(this, "Data gagal dimuat.", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btnGetDirection:
-
-                break;
-
-            case R.id.btn_current_location:
-                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
-                break;
-        }
     }
 }

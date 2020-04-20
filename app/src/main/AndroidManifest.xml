@@ -22,8 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.policeofficelocation.PoliceOfficeLocationActivity"></activity>
-        <activity android:name=".ui.policeofficelocation.PoliceOfficeLocationActivity1" />
+        <activity android:name=".ui.notification.NotificationActivity"></activity>
+        <activity android:name=".ui.policeofficelocation.PoliceOfficeLocationActivity" />
         <activity android:name=".ui.hostipallocation.HospitalLocationActivity" />
         <activity android:name=".ui.setting.editpassword.EditPasswordActivity" />
         <activity android:name=".ui.setting.editprofile.EditProfileActivity" />

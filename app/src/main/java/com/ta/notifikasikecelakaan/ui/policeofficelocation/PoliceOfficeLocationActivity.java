@@ -19,7 +19,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -54,7 +53,7 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
     private String idPoliceOffice;
 
     private int height = 100;
-    private int width = 88;
+    private int width = 86;
 
     private Double latitude, longitude, latitude2, longitude2;
 
@@ -87,8 +86,8 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
         mMap.addMarker(place1);
         mMap.addMarker(place2);
 
-        CameraPosition Surabaya = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(13).bearing(0).tilt(0).build();
-        mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Surabaya)));
+        CameraPosition cPoliceOffice = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(13).bearing(0).tilt(0).build();
+        mMap.moveCamera((CameraUpdateFactory.newCameraPosition(cPoliceOffice)));
     }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
@@ -189,7 +188,6 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
         place2 = new MarkerOptions().position(new LatLng(latitude2, longitude2)).icon(BitmapDescriptorFactory.fromBitmap(marker_police));
 
         new FetchURL(PoliceOfficeLocationActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
-
 
     }
 

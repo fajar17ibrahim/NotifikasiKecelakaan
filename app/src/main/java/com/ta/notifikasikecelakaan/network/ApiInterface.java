@@ -1,6 +1,7 @@
 package com.ta.notifikasikecelakaan.network;
 
 
+import com.ta.notifikasikecelakaan.model.Accident;
 import com.ta.notifikasikecelakaan.model.Gallery;
 import com.ta.notifikasikecelakaan.model.History;
 import com.ta.notifikasikecelakaan.model.Hospital;
@@ -69,6 +70,9 @@ public interface ApiInterface {
 
     @GET("respondent.php")
     Call<Respondent> getRespondentDetail(@Query("id") String respondentId);
+
+    @GET("accident.php")
+    Call<Accident> getAccidentNotification();
 
     @PUT("respondent.php")
     Call<RespondentUpdate> updateRespondent(@Body RespondentUpdate respondentUpdate,
