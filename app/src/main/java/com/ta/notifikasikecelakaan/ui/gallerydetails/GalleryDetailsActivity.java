@@ -33,6 +33,9 @@ public class GalleryDetailsActivity extends AppCompatActivity implements Gallery
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //ganti icon nav drawer
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_black);
+
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

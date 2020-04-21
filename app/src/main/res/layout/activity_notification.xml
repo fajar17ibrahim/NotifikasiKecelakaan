@@ -37,7 +37,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="14dp"
-                android:paddingTop="10dp"
+                android:padding="10dp"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:background="@color/buttonMerahTua"
                 android:paddingBottom="10dp"
                 android:textColor="#FFFFFF"
@@ -62,10 +64,9 @@
             android:id="@+id/cari_lokasi"
             android:background="@drawable/border_radius"
             android:padding="15dp"
-            android:text="Petunjuk arah"
+            android:text="Menuju Lokasi Kecelakaan"
             android:textColor="#FFFFFF"
-            android:textSize="15dp"
-            android:textAllCaps="false"
+            android:textSize="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </RelativeLayout>
@@ -76,7 +77,6 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/buttonBiru"
         app:titleTextColor="@color/colorPutih"
-        android:paddingLeft="10dp"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     <RelativeLayout

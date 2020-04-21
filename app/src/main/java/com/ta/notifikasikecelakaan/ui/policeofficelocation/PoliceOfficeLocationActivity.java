@@ -131,6 +131,8 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(policeOffice.getName());
+        //ganti icon nav drawer
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

@@ -118,6 +118,8 @@ public class NotificationActivity extends AppCompatActivity implements OnMapRead
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(accident.getAddress());
+        //ganti icon nav drawer
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,22 +143,22 @@ public class NotificationActivity extends AppCompatActivity implements OnMapRead
         mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                if (location != null){
-                    // Do it all with location
-                    Log.d("My Current location", "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(latLng);
+            if (location != null){
+                // Do it all with location
+                Log.d("My Current location", "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(latLng);
 
-                    Current = CameraPosition.builder().target(latLng).zoom(13).bearing(0).tilt(0).build();
+                Current = CameraPosition.builder().target(latLng).zoom(13).bearing(0).tilt(0).build();
 
-                    BitmapDrawable bitmapdrawcurrent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
-                    Bitmap bcurrent = bitmapdrawcurrent.getBitmap();
-                    Bitmap marker_current = Bitmap.createScaledBitmap(bcurrent, width, height, false);
+                BitmapDrawable bitmapdrawcurrent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
+                Bitmap bcurrent = bitmapdrawcurrent.getBitmap();
+                Bitmap marker_current = Bitmap.createScaledBitmap(bcurrent, width, height, false);
 
-                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(marker_current));
-                    mMap.addMarker(markerOptions);
-                }
+                markerOptions.icon(BitmapDescriptorFactory.fromBitmap(marker_current));
+                mMap.addMarker(markerOptions);
+            }
             }
         });
 

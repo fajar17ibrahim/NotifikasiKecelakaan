@@ -24,7 +24,7 @@
             android:layout_height="80dp"
             android:contentDescription="@string/nav_header_desc"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
-            app:srcCompat="@drawable/avatar_profile" />
+            app:srcCompat="@drawable/avatar_men" />
 
         <TextView
             android:id="@+id/tv_name"

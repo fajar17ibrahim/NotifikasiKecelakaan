@@ -63,6 +63,16 @@ public class GambarActivity extends AppCompatActivity implements View.OnClickLis
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //ganti icon nav drawer
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_black);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         imgView = findViewById(R.id.imageView);
         btnAmbil = findViewById(R.id.ambil_gambar);
         btnUpload = findViewById(R.id.upload_gambar);
@@ -89,7 +99,7 @@ public class GambarActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onClick(View v) {
                 uploadImage();
-                //Toast.makeText(GambarActivity.this, "Gambar Berhasil Diupload", Toast.LENGTH_SHORT).show();
+                Toast.makeText(GambarActivity.this, "Gambar Berhasil Diupload", Toast.LENGTH_SHORT).show();
 
             }
         });

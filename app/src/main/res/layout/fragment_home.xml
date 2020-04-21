@@ -38,7 +38,9 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="14dp"
-                android:paddingTop="10dp"
+                android:padding="10dp"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:background="@color/buttonMerahTua"
                 android:paddingBottom="10dp"
                 android:textColor="#FFFFFF"
@@ -73,22 +75,20 @@
             android:padding="15dp"
             android:text="Lihat Rute"
             android:textColor="#FFFFFF"
-            android:textSize="15dp"
-            android:textAllCaps="false"
+            android:textSize="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/btn_in_location"
-            android:background="@drawable/border_radius"
-            android:padding="15dp"
-            android:text="Saya telah di Lokasi"
-            android:textColor="#FFFFFF"
-            android:layout_marginLeft="10dp"
-            android:textSize="15dp"
-            android:textAllCaps="false"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/btn_in_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/border_radius"
+                android:padding="15dp"
+                android:text="Saya telah di Lokasi"
+                android:textColor="#FFFFFF"
+                android:textSize="12dp" />
         </LinearLayout>
     </RelativeLayout>
     <com.google.android.material.floatingactionbutton.FloatingActionButton

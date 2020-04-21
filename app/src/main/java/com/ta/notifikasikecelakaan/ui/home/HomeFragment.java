@@ -127,10 +127,24 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
     }
 
     @Override
+    public void setDataToView(Accident accident) {
+        tvAddress.setText(accident.getAddress());
+
+        latitude2 = accident.getLatitude();
+        longitude2 = accident.getLongitude();
+
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         Log.d("mylog", "Added Markers");
 
+        BitmapDrawable bitmapdrawuser = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker);
+        Bitmap buser = bitmapdrawuser.getBitmap();
+        Bitmap marker_user = Bitmap.createScaledBitmap(buser, width, height, false);
+
+        place2 = new MarkerOptions().position(new LatLng(latitude2, longitude2)).icon(BitmapDescriptorFactory.fromBitmap(marker_user));
         mMap.addMarker(place2);
 
         CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(13).bearing(0).tilt(0).build();
@@ -213,20 +227,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
     @Override
     public void hideProgress() {
         pbLoading.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void setDataToView(Accident accident) {
-        tvAddress.setText(accident.getAddress());
-
-        latitude2 = accident.getLatitude();
-        longitude2 = accident.getLongitude();
-
-        BitmapDrawable bitmapdrawuser = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker);
-        Bitmap buser = bitmapdrawuser.getBitmap();
-        Bitmap marker_user = Bitmap.createScaledBitmap(buser, width, height, false);
-
-        place2 = new MarkerOptions().position(new LatLng(latitude2, longitude2)).icon(BitmapDescriptorFactory.fromBitmap(marker_user));
     }
 
     @Override
