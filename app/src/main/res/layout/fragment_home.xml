@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -44,7 +45,7 @@
                 android:background="@color/buttonMerahTua"
                 android:paddingBottom="10dp"
                 android:textColor="#FFFFFF"
-                android:text="Jl. Dharma Husada Indah" />
+                android:text="Jl. Embong-Malang" />
 
             <TextView
                 android:id="@+id/tv_distance"
@@ -54,7 +55,7 @@
                 android:gravity="center"
                 android:textSize="14dp"
                 android:textColor="#000"
-                android:text="1 KM dari lokasi anda saat ini" />
+                android:text="1.861 KM dari lokasi anda saat ini" />
         </LinearLayout>
     </RelativeLayout>
 

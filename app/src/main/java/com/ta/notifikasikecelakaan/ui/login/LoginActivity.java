@@ -1,14 +1,18 @@
 package com.ta.notifikasikecelakaan.ui.login;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,6 +47,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText txt_telp, txt_password;
 
     private Boolean session = false;
+
+    private Dialog dialog;
+    private LayoutInflater inflater;
+    private View dialogView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +148,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     loading.dismiss();
                 }
             });
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this).setTitle("Keluar")
+                .setMessage("Keluar aplikasi ?")
+                .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        moveTaskToBack(true);
+                    }
+                }).setNegativeButton("Tidak", null).show();
     }
 
 }

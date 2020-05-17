@@ -32,7 +32,7 @@
                 android:textColor="#FFFFFF"
                 android:text="Terjadi Kecelakaan" />
             <TextView
-                android:id="@+id/txt_address"
+                android:id="@+id/tv_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -43,15 +43,18 @@
                 android:background="@color/buttonMerahTua"
                 android:paddingBottom="10dp"
                 android:textColor="#FFFFFF"
-                android:text="Jl. Dharma Husada Indah" />
+                android:text="Jl. Embong-Malang" />
+
             <TextView
+                android:id="@+id/tv_distance"
                 android:padding="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="14dp"
                 android:textColor="#000"
-                android:text="1 KM dari lokasi anda saat ini" />
+                android:text="1.861 KM dari lokasi anda saat ini" />
+
         </LinearLayout>
     </RelativeLayout>
 

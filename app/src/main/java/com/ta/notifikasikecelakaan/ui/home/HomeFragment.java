@@ -46,6 +46,7 @@ import com.ta.notifikasikecelakaan.model.Accident;
 import com.ta.notifikasikecelakaan.ui.gallery.GalleryFragment;
 import com.ta.notifikasikecelakaan.ui.notification.NotificationActivity;
 import com.ta.notifikasikecelakaan.ui.takephoto.GambarActivity;
+import com.ta.notifikasikecelakaan.utils.Constans;
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLoadedCallback, View.OnClickListener, HomeContract.View{
 
@@ -107,6 +108,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
 
         //klik tombol in location
         btnInLocation.setOnClickListener(this);
+
 
         homePresenter = new HomePresenter(this);
         homePresenter.requestDataFromServer();
