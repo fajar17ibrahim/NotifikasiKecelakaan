@@ -4,12 +4,15 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
 /**
  * Created by Vishal on 10/20/2018.
@@ -18,6 +21,9 @@ import java.net.URL;
 public class FetchURL extends AsyncTask<String, Void, String> {
     Context mContext;
     String directionMode = "driving";
+    String duration, distance;
+
+    String mMap;
 
     public FetchURL(Context mContext) {
         this.mContext = mContext;
@@ -44,6 +50,13 @@ public class FetchURL extends AsyncTask<String, Void, String> {
         PointsParser parserTask = new PointsParser(mContext, directionMode);
         // Invokes the thread for parsing the JSON data
         parserTask.execute(s);
+
+        HashMap<String, String> directionList = null;
+        DataParser parser = new DataParser();
+        directionList = parser.parseDirecirons(s);
+        duration = directionList.get("duration");
+        distance = directionList.get("distance");
+
     }
 
     private String downloadUrl(String strUrl) throws IOException {

@@ -1,10 +1,12 @@
 package com.ta.notifikasikecelakaan.ui.home;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -20,12 +22,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -36,17 +37,23 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.ta.notifikasikecelakaan.R;
-import com.ta.notifikasikecelakaan.directionhelpers.FetchURL;
 import com.ta.notifikasikecelakaan.directionhelpers.TaskLoadedCallback;
 import com.ta.notifikasikecelakaan.model.Accident;
+import com.ta.notifikasikecelakaan.network.ApiClient;
+import com.ta.notifikasikecelakaan.network.ApiInterface;
 import com.ta.notifikasikecelakaan.ui.gallery.GalleryFragment;
 import com.ta.notifikasikecelakaan.ui.notification.NotificationActivity;
 import com.ta.notifikasikecelakaan.ui.takephoto.GambarActivity;
-import com.ta.notifikasikecelakaan.utils.Constans;
+import com.ta.notifikasikecelakaan.utils.ApiUtils;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
+
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLoadedCallback, View.OnClickListener, HomeContract.View{
 
@@ -236,4 +243,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
         Log.d("Error ", throwable.toString());
         Toast.makeText(getActivity(), "Data gagal dimuat.", Toast.LENGTH_LONG).show();
     }
+
+
 }

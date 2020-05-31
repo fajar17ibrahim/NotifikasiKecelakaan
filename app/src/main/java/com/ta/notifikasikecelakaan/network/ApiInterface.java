@@ -1,6 +1,5 @@
 package com.ta.notifikasikecelakaan.network;
 
-
 import com.ta.notifikasikecelakaan.model.Accident;
 import com.ta.notifikasikecelakaan.model.Gallery;
 import com.ta.notifikasikecelakaan.model.History;
@@ -11,6 +10,7 @@ import com.ta.notifikasikecelakaan.model.RespondentUpdate;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -72,9 +72,13 @@ public interface ApiInterface {
     Call<Respondent> getRespondentDetail(@Query("id") String respondentId);
 
     @GET("accident.php")
-    Call<Accident> getAccidentNotification();
+    Observable<Accident> getAccidentNotification();
+
+    @GET("accident.php")
+    Call<Accident> getAccident();
 
     @PUT("respondent.php")
     Call<RespondentUpdate> updateRespondent(@Body RespondentUpdate respondentUpdate,
                                             @Query("id") String idRespondent);
+
 }

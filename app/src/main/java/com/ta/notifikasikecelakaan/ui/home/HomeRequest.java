@@ -17,7 +17,7 @@ public class HomeRequest implements HomeContract.Model {
 
         ApiInterface apiInterface = ApiClient.getClient(ApiUtils.BASE_URL_API).create(ApiInterface.class);
 
-        Call<Accident> call = apiInterface.getAccidentNotification();
+        Call<Accident> call = apiInterface.getAccident();
         call.enqueue(new Callback<Accident>() {
             @Override
             public void onResponse(Call<Accident> call, Response<Accident> response) {

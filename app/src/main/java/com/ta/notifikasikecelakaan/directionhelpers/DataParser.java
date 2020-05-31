@@ -1,5 +1,7 @@
 package com.ta.notifikasikecelakaan.directionhelpers;
 
+import android.util.Log;
+
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
@@ -23,6 +25,7 @@ public class DataParser {
         JSONArray jSteps;
         try {
             jRoutes = jObject.getJSONArray("routes");
+
             /** Traversing all routes */
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
@@ -31,6 +34,7 @@ public class DataParser {
                 for (int j = 0; j < jLegs.length(); j++) {
                     jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
 
+                    /** Traversing all steps */
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
                         String polyline = "";
@@ -93,5 +97,35 @@ public class DataParser {
         }
 
         return poly;
+    }
+
+    public HashMap<String, String> parseDirecirons(String jsonData) {
+        JSONArray jsonArray = null;
+        JSONObject jsonObject;
+
+        try {
+            jsonObject = new JSONObject(jsonData);
+            jsonArray = jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return getDuration(jsonArray);
+    }
+
+    private HashMap<String, String> getDuration(JSONArray jsonArray) {
+        HashMap<String, String> googleDirectionsMap = new HashMap<>();
+        String duration ="";
+        String distance ="";
+        try {
+            duration = jsonArray.getJSONObject(0).getJSONObject("duration").getString("text");
+            distance = jsonArray.getJSONObject(0).getJSONObject("disatnce").getString("text");
+
+            googleDirectionsMap.put("duration", duration);
+            googleDirectionsMap.put("distance", distance);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return googleDirectionsMap;
     }
 }
