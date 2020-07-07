@@ -13,7 +13,7 @@ public interface HomeContract {
             void onFailure(Throwable t);
         }
 
-        void getAccident(OnFinishedListener onFinishedListener);
+        void getAccident(OnFinishedListener onFinishedListener, int user_id);
 
     }
 
@@ -30,7 +30,7 @@ public interface HomeContract {
 
     interface Presenter{
 
-        void requestDataFromServer();
+        void requestDataFromServer(int user_id);
 
     }
 

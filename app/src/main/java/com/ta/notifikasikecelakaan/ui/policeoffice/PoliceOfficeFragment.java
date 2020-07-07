@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ public class PoliceOfficeFragment extends Fragment implements PoliceOfficeContra
     private RecyclerView rvPolisi;
 
     private ProgressBar pbLoading;
+    private TextView tvEmpty;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class PoliceOfficeFragment extends Fragment implements PoliceOfficeContra
         rvPolisi.setHasFixedSize(true);
 
         pbLoading = (ProgressBar) root.findViewById(R.id.pb_loading);
+        tvEmpty = (TextView) root.findViewById(R.id.tv_empty);
 
         showRecyclerList();
 
@@ -63,6 +66,12 @@ public class PoliceOfficeFragment extends Fragment implements PoliceOfficeContra
     public void setDataToRecyclerView(List<PoliceOffice> policeOfficeList) {
         list.addAll(policeOfficeList);
         listPoliceOfficeAdapter.notifyDataSetChanged();
+
+        if (listPoliceOfficeAdapter.getItemCount() > 0 ) {
+            hideEmpty();
+        } else {
+            showEmpty();
+        }
     }
 
     @Override
@@ -77,6 +86,7 @@ public class PoliceOfficeFragment extends Fragment implements PoliceOfficeContra
         rvPolisi.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPolisi.setAdapter(listPoliceOfficeAdapter);
 
+
         listPoliceOfficeAdapter.setOnItemClickCallback(new ListPoliceOfficeAdapter.OnItemClickCallback() {
             @Override
             public void onItemClicked(PoliceOffice data) {
@@ -85,9 +95,24 @@ public class PoliceOfficeFragment extends Fragment implements PoliceOfficeContra
         });
     }
 
-    private void showSelectedPesan(PoliceOffice data) {
+    private void showEmpty() {
+        rvPolisi.setVisibility(View.GONE);
+        tvEmpty.setVisibility(View.VISIBLE);
+    }
+
+    private void hideEmpty() {
+        rvPolisi.setVisibility(View.VISIBLE);
+        tvEmpty.setVisibility(View.GONE);
+    }
+
+    private void showSelectedPesan(PoliceOffice policeOffice) {
         Intent iPoliceOfficeLocation = new Intent(getActivity(), PoliceOfficeLocationActivity.class);
-        iPoliceOfficeLocation.putExtra(Constans.TAG_POLICEOFFICE_ID, data.getPoliceoffice_id());
+        Bundle data = new Bundle();
+        data.putString(Constans.TAG_POLICEOFFICE_NAME, policeOffice.getName());
+        data.putString(Constans.TAG_POLICEOFFICE_ADDRESS, policeOffice.getAddress());
+        data.putDouble(Constans.TAG_POLICEOFFICE_LAT, policeOffice.getLatitude());
+        data.putDouble(Constans.TAG_POLICEOFFICE_LONG, policeOffice.getLongitude());
+        iPoliceOfficeLocation.putExtras(data);
         startActivity(iPoliceOfficeLocation);
     }
 }

@@ -10,9 +10,6 @@ public class History {
     @SerializedName("time")
     private String time;
 
-    @SerializedName("address")
-    private String address;
-
     @SerializedName("latitude")
     private double latitude;
 
@@ -42,14 +39,6 @@ public class History {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public double getLatitude() {
@@ -92,10 +81,9 @@ public class History {
         this.family_phone = family_phone;
     }
 
-    public History(int history_id, String time, String address, double latitude, double longitude, String name, String phone, String family_phone) {
+    public History(int history_id, String time, double latitude, double longitude, String name, String phone, String family_phone) {
         this.history_id = history_id;
         this.time = time;
-        this.address = address;
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;

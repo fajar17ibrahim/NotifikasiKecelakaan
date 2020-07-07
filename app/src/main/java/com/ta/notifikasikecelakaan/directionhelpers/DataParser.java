@@ -1,6 +1,5 @@
 package com.ta.notifikasikecelakaan.directionhelpers;
 
-import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 

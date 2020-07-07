@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,7 @@ public class HospitalFragment extends Fragment implements HospitalContract.View 
     private RecyclerView rvHospital;
     private ProgressBar pbLoading;
     private List<Hospital> list;
+    private TextView tvEmpty;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,6 +42,7 @@ public class HospitalFragment extends Fragment implements HospitalContract.View 
         rvHospital.setHasFixedSize(true);
 
         pbLoading = (ProgressBar) root.findViewById(R.id.pb_loading);
+        tvEmpty = (TextView) root.findViewById(R.id.tv_empty);
 
         showRecyclerList();
 
@@ -63,9 +66,25 @@ public class HospitalFragment extends Fragment implements HospitalContract.View 
         });
     }
 
-    private void showSelectedPesan(Hospital data) {
+    public void showEmpty() {
+        tvEmpty.setVisibility(View.VISIBLE);
+        rvHospital.setVisibility(View.GONE);
+    }
+
+    private void hideEmpty() {
+        tvEmpty.setVisibility(View.GONE);
+        rvHospital.setVisibility(View.VISIBLE);
+    }
+
+    private void showSelectedPesan(Hospital hospital) {
         Intent iHospitalLocation = new Intent(getActivity(), HospitalLocationActivity.class);
-        iHospitalLocation.putExtra(Constans.TAG_HOSPITAL_ID, data.getHospital_id());
+        Bundle data = new Bundle();
+        data.putString(Constans.TAG_HOSPITAL_ID, hospital.getHospital_id());
+        data.putString(Constans.TAG_HOSPITAL_NAME, hospital.getName());
+        data.putString(Constans.TAG_HOSPITAL_ADDRESS, hospital.getAddress());
+        data.putDouble(Constans.TAG_RESPONDENT_LAT, hospital.getLatitude());
+        data.putDouble(Constans.TAG_RESPONDENT_LONG, hospital.getLongitude());
+        iHospitalLocation.putExtras(data);
         startActivity(iHospitalLocation);
     }
 
@@ -83,6 +102,12 @@ public class HospitalFragment extends Fragment implements HospitalContract.View 
     public void setDataToRecyclerView(List<Hospital> hospitalList) {
         list.addAll(hospitalList);
         listHospitalsAdapter.notifyDataSetChanged();
+
+        if (listHospitalsAdapter.getItemCount() > 0 ) {
+            hideEmpty();
+        } else {
+            showEmpty();
+        }
     }
 
     @Override

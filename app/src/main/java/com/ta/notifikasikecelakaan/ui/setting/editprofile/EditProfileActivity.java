@@ -5,14 +5,12 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.ta.notifikasikecelakaan.R;
@@ -25,7 +23,6 @@ import com.ta.notifikasikecelakaan.utils.Constans;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,7 +32,6 @@ public class EditProfileActivity extends AppCompatActivity implements ProfileCon
 
     private SharedPreferences sharedpreferences;
     private ProfilePresenter profilePresenter;
-    private ProgressBar pbLoading;
     private String idRespondent;
 
     private ApiInterface mApiService;
@@ -58,7 +54,7 @@ public class EditProfileActivity extends AppCompatActivity implements ProfileCon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         sharedpreferences = getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
-        idRespondent = sharedpreferences.getString(Constans.TAG_ID_RESPONDENT, "id");
+        idRespondent = sharedpreferences.getString(Constans.TAG_RESPONDENT_ID, "id");
 
         profilePresenter = new ProfilePresenter(this);
         profilePresenter.requestDataFromServer(idRespondent);

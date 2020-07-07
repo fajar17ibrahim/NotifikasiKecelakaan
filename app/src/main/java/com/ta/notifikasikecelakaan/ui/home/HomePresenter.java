@@ -30,10 +30,10 @@ public class HomePresenter implements HomeContract.Presenter, HomeContract.Model
     }
 
     @Override
-    public void requestDataFromServer() {
+    public void requestDataFromServer(int user_id) {
         if ( homeView != null ) {
             homeView.showProgress();
         }
-        homeModel.getAccident(this);
+        homeModel.getAccident(this, user_id);
     }
 }

@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.LocationListener;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,21 +43,22 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.directionhelpers.TaskLoadedCallback;
-import com.ta.notifikasikecelakaan.model.Accident;
-import com.ta.notifikasikecelakaan.network.ApiClient;
-import com.ta.notifikasikecelakaan.network.ApiInterface;
+import com.ta.notifikasikecelakaan.model.Respondent;
 import com.ta.notifikasikecelakaan.ui.gallery.GalleryFragment;
+import com.ta.notifikasikecelakaan.ui.login.LoginActivity;
 import com.ta.notifikasikecelakaan.ui.notification.NotificationActivity;
+import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfileContract;
+import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfilePresenter;
 import com.ta.notifikasikecelakaan.ui.takephoto.GambarActivity;
-import com.ta.notifikasikecelakaan.utils.ApiUtils;
-
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.observers.DisposableObserver;
-import io.reactivex.schedulers.Schedulers;
+import com.ta.notifikasikecelakaan.utils.Constans;
 
 
-public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLoadedCallback, View.OnClickListener, HomeContract.View{
+
+public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLoadedCallback, View.OnClickListener, ProfileContract.View {
+
+    private SharedPreferences sharedPreferences;
+    private int user_id = 0;
+    private String idRespondent;
 
     private GoogleMap mMap;
     private LocationListener locationListener;
@@ -65,27 +68,38 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
 
     private MarkerOptions place1, place2;
     private Button btnCariRute, btnInLocation;
-    private FloatingActionButton btnCurrentLocation, vGambar, phone, kamera;
+    private FloatingActionButton btnCurrentLocation;
+    private FloatingActionButton btnCurrentLocation2;
+    private FloatingActionButton vGambar;
+    private FloatingActionButton phone;
+    private FloatingActionButton kamera;
     private Polyline currentPolyline;
     private CameraPosition Current;
 
     private HomePresenter homePresenter;
+    private ProfilePresenter profilePresenter;
 
     private int height = 100;
     private int width = 86;
 
     private String telp = "112";
     private ProgressBar pbLoading;
-    private TextView tvAddress;
+    private TextView tvAddress, tvDistance;
+    private RelativeLayout rlNotifInfo;
 
-    private LatLng latLng;
-
-    private Double latitude, longitude, latitude2, longitude2;
+    private Double latitude = 0.0;
+    private Double longitude = 0.0;
+    private Double latitude2 = 0.0;
+    private Double longitude2 = 0.0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
+        sharedPreferences = getActivity().getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        idRespondent = sharedPreferences.getString(Constans.TAG_RESPONDENT_ID, "0");
+        user_id = sharedPreferences.getInt(Constans.TAG_USER_ID, 0);
 
         pbLoading = (ProgressBar) root.findViewById(R.id.pb_loading);
 
@@ -94,9 +108,46 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
 
         vGambar = (FloatingActionButton) root.findViewById(R.id.btn_view_image);
         btnCurrentLocation = (FloatingActionButton) root.findViewById(R.id.btn_current_location);
+        btnCurrentLocation2 = (FloatingActionButton) root.findViewById(R.id.btn_current_location2);
         phone = (FloatingActionButton) root.findViewById(R.id.phone);
         kamera = (FloatingActionButton) root.findViewById(R.id.kamera);
+        rlNotifInfo = (RelativeLayout) root.findViewById(R.id.rl_notif_info);
         tvAddress = (TextView) root.findViewById(R.id.tv_address);
+        tvDistance = (TextView) root.findViewById(R.id.tv_distance);
+
+        profilePresenter = new ProfilePresenter(this);
+        profilePresenter.requestDataFromServer(idRespondent);
+
+        latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LAT, "0.0"));
+        longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LONG, "0.0"));
+        latitude2 = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LAT, "0.0"));
+        longitude2 = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LONG, "0.0"));
+
+        if(user_id != 0) {
+            rlNotifInfo.setVisibility(View.VISIBLE);
+            btnCariRute.setVisibility(View.VISIBLE);
+            btnInLocation.setVisibility(View.VISIBLE);
+            btnCurrentLocation2.hide();
+            btnCurrentLocation.show();
+            phone.show();
+            kamera.show();
+            vGambar.show();
+            tvAddress.setText(latitude2 +", "+ longitude2);
+        } else {
+            rlNotifInfo.setVisibility(View.GONE);
+            btnCariRute.setVisibility(View.GONE);
+            btnInLocation.setVisibility(View.GONE);
+            btnCurrentLocation2.show();
+            phone.hide();
+            kamera.hide();
+            vGambar.hide();
+            btnCurrentLocation.hide();
+        }
+
+//        if (user_id != 0) {
+//            homePresenter = new HomePresenter(this);
+//            homePresenter.requestDataFromServer(user_id);
+//        }
 
         //klik tombol lihat gambar
         vGambar.setOnClickListener(this);
@@ -113,12 +164,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
         //klik tombol current location
         btnCurrentLocation.setOnClickListener(this);
 
+        //klik tombol current location 2
+        btnCurrentLocation2.setOnClickListener(this);
+
         //klik tombol in location
         btnInLocation.setOnClickListener(this);
-
-
-        homePresenter = new HomePresenter(this);
-        homePresenter.requestDataFromServer();
 
         return root;
     }
@@ -136,28 +186,54 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
     }
 
     @Override
-    public void setDataToView(Accident accident) {
-        tvAddress.setText(accident.getAddress());
+    public void setDataToView(Respondent respondent) {
+        tvDistance.setText(respondent.getDistance() +" KM dari lokasi anda saat ini");
 
-        latitude2 = accident.getLatitude();
-        longitude2 = accident.getLongitude();
-
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Constans.TAG_RESPONDENT_ID, String.valueOf(respondent.getRespondent_id()));
+        editor.putString(Constans.TAG_RESPONDENT_DISTANCE, String.valueOf(respondent.getDistance()));
+        editor.putString(Constans.TAG_RESPONDENT_LAT, String.valueOf(respondent.getLatitude()));
+        editor.putString(Constans.TAG_RESPONDENT_LONG, String.valueOf(respondent.getLongitude()));
+        editor.apply();
     }
+
+//    @Override
+//    public void setDataToView(Accident accident) {
+//        tvAddress.setText(accident.getLatitude() +", "+ accident.getLongitude());
+//
+//        latitude2 = accident.getLatitude();
+//        longitude2 = accident.getLongitude();
+//
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         Log.d("mylog", "Added Markers");
 
+        BitmapDrawable bitmapdrawrespondent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
+        Bitmap brespondent = bitmapdrawrespondent.getBitmap();
+        Bitmap marker_respondent = Bitmap.createScaledBitmap(brespondent, width, height, false);
+
         BitmapDrawable bitmapdrawuser = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker);
         Bitmap buser = bitmapdrawuser.getBitmap();
         Bitmap marker_user = Bitmap.createScaledBitmap(buser, width, height, false);
 
+        place1 = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromBitmap(marker_respondent));
         place2 = new MarkerOptions().position(new LatLng(latitude2, longitude2)).icon(BitmapDescriptorFactory.fromBitmap(marker_user));
-        mMap.addMarker(place2);
 
-        CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(13).bearing(0).tilt(0).build();
-        mMap.moveCamera((CameraUpdateFactory.newCameraPosition(AccidentLocation)));
+        mMap.addMarker(place1);
+
+        if (user_id != 0) {
+            mMap.addMarker(place2);
+            CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(13).bearing(0).tilt(0).build();
+            mMap.moveCamera((CameraUpdateFactory.newCameraPosition(AccidentLocation)));
+        } else {
+            CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(13).bearing(0).tilt(0).build();
+            mMap.moveCamera((CameraUpdateFactory.newCameraPosition(AccidentLocation)));
+        }
+
+
 
     }
 
@@ -218,12 +294,19 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
                 break;
 
             case R.id.btn_current_location:
-                CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(13).bearing(0).tilt(0).build();
-                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(AccidentLocation)));
+                CameraPosition Respondent = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(13).bearing(0).tilt(0).build();
+                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Respondent)));
+                break;
+
+            case R.id.btn_current_location2:
+                CameraPosition Respondent1 = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(13).bearing(0).tilt(0).build();
+                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Respondent1)));
                 break;
 
             case R.id.btn_in_location:
-                    btnInLocation.setText("Bawa ke Rumah Sakit");
+                    sharedPreferences.edit().remove(Constans.TAG_USER_ID).commit();
+                    Intent iLogin = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(iLogin);
                 break;
         }
     }

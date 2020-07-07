@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
@@ -33,10 +35,16 @@ import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.directionhelpers.FetchURL;
 import com.ta.notifikasikecelakaan.directionhelpers.TaskLoadedCallback;
 import com.ta.notifikasikecelakaan.model.PoliceOffice;
+import com.ta.notifikasikecelakaan.model.Respondent;
+import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfileContract;
+import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfilePresenter;
 import com.ta.notifikasikecelakaan.utils.Constans;
 
 
-public class PoliceOfficeLocationActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, PoliceOfficeLocationContract.View, View.OnClickListener {
+public class PoliceOfficeLocationActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, View.OnClickListener {
+
+    private SharedPreferences sharedPreferences;
+    private String idRespondent;
     private GoogleMap mMap;
 
     private MapView mapView;
@@ -47,6 +55,7 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
     private CameraPosition Current;
 
     private PoliceOfficeLocationPresenter policeOfficeLocationPresenter;
+    private ProfilePresenter profilePresenter;
 
     private TextView tvName, tvAddress;
     private ProgressBar pbLoading;
@@ -55,27 +64,96 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
     private int height = 100;
     private int width = 86;
 
-    private Double latitude, longitude, latitude2, longitude2;
+    private Double latitude = 0.0;
+    private Double longitude = 0.0;
+    private Double latitude2 = 0.0;
+    private Double longitude2 = 0.0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_police_office_location);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Kantor polisi");
+        //ganti icon nav drawer
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        sharedPreferences = getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+
         tvName = (TextView) findViewById(R.id.txt_name);
         tvAddress = (TextView) findViewById(R.id.txt_address);
         pbLoading = (ProgressBar) findViewById(R.id.pb_loading);
-
-        idPoliceOffice = getIntent().getStringExtra(Constans.TAG_POLICEOFFICE_ID);
-
-        policeOfficeLocationPresenter =  new PoliceOfficeLocationPresenter(this);
-        policeOfficeLocationPresenter.requestDataFromServer(idPoliceOffice);
 
         getDirection = findViewById(R.id.btnGetDirection);
         getDirection.setOnClickListener(this);
 
         btnCurrentLocation = (FloatingActionButton) findViewById(R.id.btn_current_location);
         btnCurrentLocation.setOnClickListener(this);
+
+        mapView = (MapView) findViewById(R.id.map);
+        if(mapView != null) {
+            mapView.onCreate(null);
+            mapView.onResume();
+            mapView.getMapAsync(this);
+        }
+
+        // GET CURRENT LOCATION
+//        FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
+//        mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//            @Override
+//            public void onSuccess(Location location) {
+//                if (location != null){
+//                    // Do it all with location
+//                    Log.d("My Current location", "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
+//                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+//                    MarkerOptions markerOptions = new MarkerOptions();
+//                    markerOptions.position(latLng);
+//
+//                    Current = CameraPosition.builder().target(latLng).zoom(13).bearing(0).tilt(0).build();
+//
+//                    BitmapDrawable bitmapdrawcurrent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
+//                    Bitmap bcurrent = bitmapdrawcurrent.getBitmap();
+//                    Bitmap marker_current = Bitmap.createScaledBitmap(bcurrent, width, height, false);
+//
+//                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(marker_current));
+//                    mMap.addMarker(markerOptions);
+//                }
+//            }
+//        });
+        latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LAT, "0.0"));
+        longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LONG, "0.0"));
+
+        Bundle data = getIntent().getExtras();
+
+        tvName.setText(data.getString(Constans.TAG_POLICEOFFICE_NAME));
+        tvAddress.setText(data.getString(Constans.TAG_POLICEOFFICE_ADDRESS));
+        latitude2 = data.getDouble(Constans.TAG_POLICEOFFICE_LAT);
+        longitude2 = data.getDouble(Constans.TAG_POLICEOFFICE_LONG);
+
+        BitmapDrawable bitmapdrawuser = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker);
+        Bitmap buser = bitmapdrawuser.getBitmap();
+        Bitmap marker_user = Bitmap.createScaledBitmap(buser, width, height, false);
+
+        BitmapDrawable bitmapdrawpolice = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_police);
+        Bitmap bpolice = bitmapdrawpolice.getBitmap();
+        Bitmap marker_police = Bitmap.createScaledBitmap(bpolice, width, height, false);
+
+        place1 = new MarkerOptions().position(new LatLng(latitude, longitude)).icon(BitmapDescriptorFactory.fromBitmap(marker_user));
+        place2 = new MarkerOptions().position(new LatLng(latitude2, longitude2)).icon(BitmapDescriptorFactory.fromBitmap(marker_police));
+
+        new FetchURL(PoliceOfficeLocationActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
+
     }
 
     @Override
@@ -114,92 +192,6 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
     }
 
     @Override
-    public void showProgress() {
-        pbLoading.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProgress() {
-        pbLoading.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void setDataToView(PoliceOffice policeOffice) {
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(policeOffice.getName());
-        //ganti icon nav drawer
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        tvName.setText(policeOffice.getName());
-        tvAddress.setText(policeOffice.getAddress());
-
-        mapView = (MapView) findViewById(R.id.map);
-        if(mapView != null) {
-            mapView.onCreate(null);
-            mapView.onResume();
-            mapView.getMapAsync(this);
-        }
-
-        // GET CURRENT LOCATION
-        FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null){
-                    // Do it all with location
-                    Log.d("My Current location", "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(latLng);
-
-                    Current = CameraPosition.builder().target(latLng).zoom(13).bearing(0).tilt(0).build();
-
-                    BitmapDrawable bitmapdrawcurrent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
-                    Bitmap bcurrent = bitmapdrawcurrent.getBitmap();
-                    Bitmap marker_current = Bitmap.createScaledBitmap(bcurrent, width, height, false);
-
-                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(marker_current));
-                    mMap.addMarker(markerOptions);
-                }
-            }
-        });
-
-        latitude2 = policeOffice.getLatitude();
-        longitude2 = policeOffice.getLongitude();
-
-        BitmapDrawable bitmapdrawuser = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker);
-        Bitmap buser = bitmapdrawuser.getBitmap();
-        Bitmap marker_user = Bitmap.createScaledBitmap(buser, width, height, false);
-
-        BitmapDrawable bitmapdrawpolice = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_police);
-        Bitmap bpolice = bitmapdrawpolice.getBitmap();
-        Bitmap marker_police = Bitmap.createScaledBitmap(bpolice, width, height, false);
-
-        place1 = new MarkerOptions().position(new LatLng(-7.254542, 112.748604)).icon(BitmapDescriptorFactory.fromBitmap(marker_user));
-        place2 = new MarkerOptions().position(new LatLng(latitude2, longitude2)).icon(BitmapDescriptorFactory.fromBitmap(marker_police));
-
-        new FetchURL(PoliceOfficeLocationActivity.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
-
-    }
-
-    @Override
-    public void onResponseFailure(Throwable t) {
-        Log.d("Error ", t.toString());
-        Toast.makeText(this, "Data gagal dimuat.", Toast.LENGTH_LONG).show();
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnGetDirection:
@@ -207,7 +199,9 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
                 break;
 
             case R.id.btn_current_location:
-                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
+//                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
+                CameraPosition Respondent = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(13).bearing(0).tilt(0).build();
+                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Respondent)));
             break;
         }
     }

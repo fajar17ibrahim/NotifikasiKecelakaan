@@ -12,12 +12,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeRequest implements HomeContract.Model {
-    @Override
-    public void getAccident(final OnFinishedListener onFinishedListener) {
 
+    @Override
+    public void getAccident(OnFinishedListener onFinishedListener, int user_id) {
         ApiInterface apiInterface = ApiClient.getClient(ApiUtils.BASE_URL_API).create(ApiInterface.class);
 
-        Call<Accident> call = apiInterface.getAccident();
+        Call<Accident> call = apiInterface.getAccident(user_id);
         call.enqueue(new Callback<Accident>() {
             @Override
             public void onResponse(Call<Accident> call, Response<Accident> response) {
@@ -32,6 +32,5 @@ public class HomeRequest implements HomeContract.Model {
                 onFinishedListener.onFailure(t);
             }
         });
-
     }
 }

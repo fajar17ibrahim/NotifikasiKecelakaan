@@ -13,13 +13,23 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_keterangan"
+            android:id="@+id/tv_waktu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="5dp"
             android:textSize="17dp"
             android:textStyle="bold"
-            tools:text="@string/tv_keterangan" />
+            tools:text="@string/tv_waktu" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:textSize="14dp"
+            android:maxLines="2"
+            tools:text="@string/text_name" />
+
         <TextView
             android:id="@+id/tv_lokasi"
             android:layout_width="match_parent"
@@ -28,14 +38,6 @@
             android:textSize="14dp"
             android:maxLines="2"
             tools:text="@string/tv_lokasi" />
-        <TextView
-            android:id="@+id/tv_waktu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:textSize="14dp"
-            android:maxLines="2"
-            tools:text="@string/tv_waktu" />
 
     </LinearLayout>
 

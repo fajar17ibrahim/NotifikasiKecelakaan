@@ -12,7 +12,7 @@ public interface HistoriesContract {
             void onFailure(Throwable t);
         }
 
-        void getHistories(OnFinishedListener onFinishedListener);
+        void getHistories(OnFinishedListener onFinishedListener, int respondent_id);
 
     }
 
@@ -24,6 +24,6 @@ public interface HistoriesContract {
     }
 
     interface Presenter{
-        void requestDataFromServer();
+        void requestDataFromServer(int respondent_id);
     }
 }

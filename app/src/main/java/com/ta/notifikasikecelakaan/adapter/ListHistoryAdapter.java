@@ -35,8 +35,8 @@ public class ListHistoryAdapter extends RecyclerView.Adapter<ListHistoryAdapter.
     public void onBindViewHolder(@NonNull ListViewHolder holder, int position) {
         History history = list.get(position);
 
-        holder.tvKeterangan.setText(history.getAddress());
         holder.tvLokasi.setText(String.valueOf(history.getLatitude())+", "+String.valueOf(history.getLongitude()));
+        holder.tvName.setText(history.getName());
         holder.tvWaktu.setText(history.getTime());
     }
 
@@ -46,12 +46,12 @@ public class ListHistoryAdapter extends RecyclerView.Adapter<ListHistoryAdapter.
     }
 
     public class ListViewHolder extends RecyclerView.ViewHolder {
-        TextView tvKeterangan, tvLokasi, tvWaktu;
+        TextView tvKeterangan, tvLokasi, tvWaktu, tvName;
         public ListViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tvKeterangan = itemView.findViewById(R.id.tv_keterangan);
             tvLokasi = itemView.findViewById(R.id.tv_lokasi);
+            tvName = itemView.findViewById(R.id.tv_name);
             tvWaktu = itemView.findViewById(R.id.tv_waktu);
         }
     }

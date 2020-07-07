@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.ta.notifikasikecelakaan.MainActivity;
 import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.network.ApiInterface;
@@ -47,6 +48,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText txt_telp, txt_password;
 
     private Boolean session = false;
+    private String token;
 
     private Dialog dialog;
     private LayoutInflater inflater;
@@ -56,11 +58,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        FirebaseInstanceId.getInstance().getToken();
+
         mContext = this;
 
         // Cek session login jika TRUE maka langsung buka MainActivity
         sharedPreferences = getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         session = sharedPreferences.getBoolean(Constans.TAG_SESSION, false);
+        token = sharedPreferences.getString(Constans.TAG_TOKEN, null);
+        Log.d("Token dari Server ", token);
 
         if (session) {
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -102,7 +109,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void requestLogin(String phone,  String password){
         Log.d("Result ", phone + " "+ password);
         mApiService = ApiUtils.getAPIService();
-        mApiService.requestLogin(phone, password)
+        mApiService.requestLogin(phone, password, token)
             .enqueue(new Callback<ResponseBody>() {
                 @Override
                 public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -115,11 +122,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 String name = jsonRESULTS.getString("name");
                                 Toast.makeText(mContext, "Selamat Datang  " + name, Toast.LENGTH_SHORT).show();
                                 String id = jsonRESULTS.getString("id");
-                                String token = jsonRESULTS.getString("token");
                                 sharedPreferences = getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString(Constans.TAG_ID_RESPONDENT, id);
-                                editor.putString(Constans.TAG_TOKEN, token);
+                                editor.putString(Constans.TAG_RESPONDENT_ID, id);
                                 editor.putBoolean(Constans.TAG_SESSION, true);
                                 editor.apply();
 

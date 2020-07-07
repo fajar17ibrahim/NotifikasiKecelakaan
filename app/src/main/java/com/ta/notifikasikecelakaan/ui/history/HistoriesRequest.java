@@ -15,10 +15,10 @@ import retrofit2.Response;
 
 public class HistoriesRequest implements HistoriesContract.Model {
     @Override
-    public void getHistories(final OnFinishedListener onFinishedListener) {
+    public void getHistories(final OnFinishedListener onFinishedListener, int respondent_id) {
         ApiInterface apiInterface = ApiClient.getClient(ApiUtils.BASE_URL_API).create(ApiInterface.class);
 
-        Call<List<History>> call = apiInterface.getHistories();
+        Call<List<History>> call = apiInterface.getHistories(respondent_id);
         call.enqueue(new Callback<List<History>>() {
             @Override
             public void onResponse(Call<List<History>> call, Response<List<History>> response) {

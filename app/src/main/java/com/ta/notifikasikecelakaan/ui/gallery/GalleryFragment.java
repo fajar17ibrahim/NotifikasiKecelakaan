@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
     private GalleryPresenter galleryPresenter;
 
     private ProgressBar pbLoading;
+    private TextView tvEmpty;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
         View root = inflater.inflate(R.layout.fragment_gallery, container, false);
 
         pbLoading = (ProgressBar) root.findViewById(R.id.pb_loading);
+        tvEmpty =(TextView) root.findViewById(R.id.tv_empty);
 
         rvGallery = root.findViewById(R.id.rv_gallery);
         rvGallery.setHasFixedSize(true);
@@ -64,6 +67,16 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
         });
     }
 
+    private void showEmpty() {
+        rvGallery.setVisibility(View.GONE);
+        tvEmpty.setVisibility(View.VISIBLE);
+    }
+
+    private void hideEmpty() {
+        rvGallery.setVisibility(View.VISIBLE);
+        tvEmpty.setVisibility(View.GONE);
+    }
+
     private void showSelectedGallery(Gallery data) {
         Intent iViewGambar = new Intent(getActivity(), GalleryDetailsActivity.class);
         iViewGambar.putExtra(Constans.TAG_GALLERY_ID, data.getGallery_id());
@@ -84,6 +97,12 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
     public void setDataToRecyclerView(List<Gallery> galleryList) {
         list.addAll(galleryList);
         listGaleryAdapter.notifyDataSetChanged();
+
+        if (listGaleryAdapter.getItemCount() > 0 ) {
+            hideEmpty();
+        } else {
+            showEmpty();
+        }
     }
 
     @Override

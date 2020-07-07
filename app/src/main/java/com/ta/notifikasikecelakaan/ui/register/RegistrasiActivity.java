@@ -20,6 +20,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessagingService;
 import com.ta.notifikasikecelakaan.MainActivity;
 import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.network.ApiInterface;
@@ -41,6 +43,8 @@ import retrofit2.Callback;
 public class RegistrasiActivity extends AppCompatActivity implements View.OnClickListener {
 
     private SharedPreferences sharedPreferences;
+
+    private String token = "null";
     private ProgressDialog loading;
 
     private Context mContext;
@@ -63,6 +67,16 @@ public class RegistrasiActivity extends AppCompatActivity implements View.OnClic
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        //ganti icon nav drawer
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_black);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
 //        conMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 //        {
 //            if (conMgr.getActiveNetworkInfo() != null
@@ -77,7 +91,6 @@ public class RegistrasiActivity extends AppCompatActivity implements View.OnClic
         Button btnDaftar = (Button) findViewById(R.id.btn_daftar);
         eNama = (EditText) findViewById(R.id.nama);
         eTelp = (EditText) findViewById(R.id.telepon);
-        eTelpKel = (EditText) findViewById(R.id.telepon_kel);
         ePass = (EditText) findViewById(R.id.pass);
         eConfPass = (EditText) findViewById(R.id.kon_pass);
         btnDaftar.setOnClickListener(this);
@@ -90,16 +103,14 @@ public class RegistrasiActivity extends AppCompatActivity implements View.OnClic
 
                 nama = eNama.getText().toString();
                 telp = eTelp.getText().toString();
-                telpKel = eTelpKel.getText().toString();
                 pass = ePass.getText().toString();
                 confPass = eConfPass.getText().toString();
 
-                if (nama.trim().length() == 0 || telp.trim().length() == 0 ||
-                    telpKel.trim().length() == 0 || pass.trim().length() == 0 || confPass.trim().length() == 0) {
+                if (nama.trim().length() == 0 || telp.trim().length() == 0 || pass.trim().length() == 0 || confPass.trim().length() == 0) {
                     Toast.makeText(mContext, "Field tidak boleh kosong! ", Toast.LENGTH_SHORT).show();
                 } else if (pass.equals(confPass)){
                     loading = ProgressDialog.show(mContext, null, "Harap Tunggu...", true, false);
-                    requestRegister(nama, telp, telpKel, pass);
+                    requestRegister(nama, telp, pass);
                 } else {
                     Toast.makeText(mContext, "Password tidak cocok! ", Toast.LENGTH_SHORT).show();
                 }
@@ -109,10 +120,10 @@ public class RegistrasiActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    private void requestRegister(final String name, final String phone, final String fam_phone, final String password) {
+    private void requestRegister(final String name, final String phone, final String password) {
         Log.d("Result ", phone + " " + password);
         mApiService = ApiUtils.getAPIService();
-        mApiService.requestRegister(name, phone, fam_phone, password)
+        mApiService.requestRegister(name, phone, password, token)
                 .enqueue(new Callback<ResponseBody>() {
 
                     @Override
@@ -125,7 +136,6 @@ public class RegistrasiActivity extends AppCompatActivity implements View.OnClic
                                     // Jika register berhasil maka data nama yang ada di response API
                                     String message = jsonRESULTS.getString("message");
                                     Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-
                                     Intent intent = new Intent(mContext, LoginActivity.class);
                                     startActivity(intent);
                                 } else {

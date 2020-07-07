@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:id="@+id/map"/>
     <RelativeLayout
+        android:id="@+id/rl_notif_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="40sp"
@@ -87,7 +88,7 @@
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/border_radius"
                 android:padding="15dp"
-                android:text="Saya telah di Lokasi"
+                android:text="Oke, Terimakasih    "
                 android:textColor="#FFFFFF"
                 android:textSize="12dp" />
         </LinearLayout>
@@ -106,8 +107,8 @@
         android:id="@+id/kamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginRight="30dp"
+        android:layout_gravity="bottom"
+        android:layout_marginLeft="30dp"
         android:layout_marginBottom="120dp"
         app:fabSize="normal"
         android:clickable="true"
@@ -125,16 +126,29 @@
         app:fabSize="normal"
         android:clickable="true"
         android:background="@drawable/border_radius"
-        android:backgroundTint="@color/buttonHijau"
+        android:backgroundTint="@color/buttonBiru"
         app:srcCompat="@android:drawable/ic_menu_gallery" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_current_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="30dp"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="30dp"
         android:layout_marginBottom="120dp"
+        app:fabSize="normal"
+        android:clickable="true"
+        android:background="@drawable/border_radius"
+        android:backgroundTint="@color/buttonBiru"
+        app:srcCompat="@android:drawable/ic_menu_mylocation" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_current_location2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="50dp"
         app:fabSize="normal"
         android:clickable="true"
         android:background="@drawable/border_radius"

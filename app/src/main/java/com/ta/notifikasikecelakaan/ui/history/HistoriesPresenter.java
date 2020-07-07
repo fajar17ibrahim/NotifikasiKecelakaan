@@ -32,10 +32,10 @@ public class HistoriesPresenter implements HistoriesContract.Presenter, Historie
     }
 
     @Override
-    public void requestDataFromServer() {
+    public void requestDataFromServer(int respondent_id) {
         if ( historyView != null ) {
             historyView.showProgress();
         }
-        historyModel.getHistories(this);
+        historyModel.getHistories(this, respondent_id);
     }
 }

@@ -7,6 +7,7 @@ import com.ta.notifikasikecelakaan.model.Hospital;
 import com.ta.notifikasikecelakaan.model.PoliceOffice;
 import com.ta.notifikasikecelakaan.model.Respondent;
 import com.ta.notifikasikecelakaan.model.RespondentUpdate;
+import com.ta.notifikasikecelakaan.model.UploadImage;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 
@@ -31,23 +33,30 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("login.php")
     Call<ResponseBody> requestLogin(@Field("phone") String phone,
-                                    @Field("password") String password);
+                                    @Field("password") String password,
+                                    @Field("token") String token);
 
     @FormUrlEncoded
     @POST("register.php")
     Call<ResponseBody> requestRegister(@Field("name") String name,
                                        @Field("phone") String phone,
-                                       @Field("fam_phone") String fam_phone,
-                                       @Field("password") String password);
+                                       @Field("password") String password,
+                                       @Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("logout.php")
+    Call<ResponseBody> requestLogout(@Field("token") String token);
 
     @Multipart
-    @POST("upload-image.php")
-    Call<ResponseBody> upload(@Part MultipartBody.Part file, @Part("description") RequestBody description);
+    @POST("upload_image.php")
+    Call<UploadImage> uploadImage(@Part MultipartBody.Part image,
+                                  @Part("history_id") RequestBody history_id,
+                                  @Part("respondent_id") RequestBody respondent_id);
 
-    @GET("police-office.php")
+    @GET("police_office.php")
     Call<List<PoliceOffice>> getPoliceOffice();
 
-    @GET("police-office.php")
+    @GET("police_office.php")
     Call<PoliceOffice> getPoliceOfficeLocation(@Query("id") String policeOfficeId);
 
     @GET("hospitals.php")
@@ -59,11 +68,11 @@ public interface ApiInterface {
     @GET("gallery.php")
     Call<List<Gallery>> getGallery();
 
-    @GET("gallery.php")
-    Call<Gallery> getGalleryDetail(@Query("id") String galleryId);
+    @GET("gallery_details.php")
+    Call<Gallery> getGalleryDetail(@Query("gallery_id") String galleryId);
 
     @GET("histories.php")
-    Call<List<History>> getHistories();
+    Call<List<History>> getHistories(@Query("id") int respondent_id);
 
     @GET("histories.php")
     Call<History> getHistoryDetail(@Query("id") int historyId);
@@ -71,14 +80,19 @@ public interface ApiInterface {
     @GET("respondent.php")
     Call<Respondent> getRespondentDetail(@Query("id") String respondentId);
 
-    @GET("accident.php")
-    Observable<Accident> getAccidentNotification();
+    @FormUrlEncoded
+    @POST("register_token.php")
+    Observable<Respondent> register(@Field("token") String token);
 
     @GET("accident.php")
-    Call<Accident> getAccident();
+    Observable<Accident> getAccidentNotification(@Field("token") String token);
+
+    @GET("accident.php")
+    Call<Accident> getAccident(@Query("id") int user_id);
 
     @PUT("respondent.php")
     Call<RespondentUpdate> updateRespondent(@Body RespondentUpdate respondentUpdate,
                                             @Query("id") String idRespondent);
+
 
 }
