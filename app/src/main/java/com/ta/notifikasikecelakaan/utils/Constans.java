@@ -15,7 +15,7 @@ public class Constans {
     public static final String TAG_GALLERY_ID = "gallery_id";;
     public static final String TAG_HOSPITAL_ID = "hospital_id";
     public static final String TAG_HOSPITAL_NAME = "hospital_name";
-    public static final String TAG_HOSPITAL_ADDRESS = "hospital_name";
+    public static final String TAG_HOSPITAL_ADDRESS = "hospital_address";
     public static final String TAG_HOSPITAL_LAT = "hospital_lat";
     public static final String TAG_HOSPITAL_LONG = "hospital_long";
     public static final String TAG_POLICEOFFICE_ID = "police_office_id";

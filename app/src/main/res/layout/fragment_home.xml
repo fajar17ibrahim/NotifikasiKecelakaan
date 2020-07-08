@@ -88,7 +88,7 @@
                 android:layout_marginLeft="10dp"
                 android:background="@drawable/border_radius"
                 android:padding="15dp"
-                android:text="Oke, Terimakasih    "
+                android:text="Oke, Terimakasih"
                 android:textColor="#FFFFFF"
                 android:textSize="12dp" />
         </LinearLayout>

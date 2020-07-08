@@ -109,28 +109,29 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
         }
 
         // GET CURRENT LOCATION
-//        FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
-//        mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//            @Override
-//            public void onSuccess(Location location) {
-//                if (location != null){
-//                    // Do it all with location
-//                    Log.d("My Current location", "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
-//                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//                    MarkerOptions markerOptions = new MarkerOptions();
-//                    markerOptions.position(latLng);
-//
-//                    Current = CameraPosition.builder().target(latLng).zoom(13).bearing(0).tilt(0).build();
-//
-//                    BitmapDrawable bitmapdrawcurrent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
-//                    Bitmap bcurrent = bitmapdrawcurrent.getBitmap();
-//                    Bitmap marker_current = Bitmap.createScaledBitmap(bcurrent, width, height, false);
-//
-//                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(marker_current));
-//                    mMap.addMarker(markerOptions);
-//                }
-//            }
-//        });
+        FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null){
+                    // Do it all with location
+                    Log.d("My Current location", "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+
+                    Current = CameraPosition.builder().target(latLng).zoom(16).bearing(0).tilt(0).build();
+
+                    BitmapDrawable bitmapdrawcurrent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
+                    Bitmap bcurrent = bitmapdrawcurrent.getBitmap();
+                    Bitmap marker_current = Bitmap.createScaledBitmap(bcurrent, width, height, false);
+
+                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(marker_current));
+                    mMap.addMarker(markerOptions);
+                }
+            }
+        });
+
         latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LAT, "0.0"));
         longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LONG, "0.0"));
 
@@ -199,9 +200,9 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
                 break;
 
             case R.id.btn_current_location:
-//                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
-                CameraPosition Respondent = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(13).bearing(0).tilt(0).build();
-                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Respondent)));
+                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
+//                CameraPosition Respondent = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(13).bearing(0).tilt(0).build();
+//                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Respondent)));
             break;
         }
     }

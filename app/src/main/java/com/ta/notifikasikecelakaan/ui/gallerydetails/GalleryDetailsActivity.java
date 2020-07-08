@@ -66,7 +66,7 @@ public class GalleryDetailsActivity extends AppCompatActivity implements Gallery
         ImageView imgGambar = (ImageView) findViewById(R.id.imageView);
         Glide.with(GalleryDetailsActivity.this)
                 .load(gallery.getImage())
-                .apply(new RequestOptions().override(300, 200))
+                .apply(new RequestOptions().override(1000, 500))
                 .into(imgGambar);
         TextView tvKeterangan = (TextView) findViewById(R.id.tv_keterangan);
         tvKeterangan.setText("Gambar ini diambil oleh "+ gallery.getName() +" di lokasi kecelakaan tanggal "+ gallery.getCreated_at() +" WIB.");

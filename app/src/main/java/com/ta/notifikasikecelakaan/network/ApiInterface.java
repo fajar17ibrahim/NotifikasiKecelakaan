@@ -1,5 +1,6 @@
 package com.ta.notifikasikecelakaan.network;
 
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable;
 import com.ta.notifikasikecelakaan.model.Accident;
 import com.ta.notifikasikecelakaan.model.Gallery;
 import com.ta.notifikasikecelakaan.model.History;
@@ -46,6 +47,13 @@ public interface ApiInterface {
     @FormUrlEncoded
     @POST("logout.php")
     Call<ResponseBody> requestLogout(@Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("victim_helped.php")
+    Call<ResponseBody> requestUpdateStatus(@Field("history_id") String history_id,
+                                           @Field("status") String status,
+                                           @Field("respondent_id") String respondent_id,
+                                           @Field("hospital_id") String hospital_id);
 
     @Multipart
     @POST("upload_image.php")

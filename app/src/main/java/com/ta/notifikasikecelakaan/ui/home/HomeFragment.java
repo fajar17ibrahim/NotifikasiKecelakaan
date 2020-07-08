@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -29,6 +30,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -39,6 +42,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.ta.notifikasikecelakaan.R;
@@ -144,11 +148,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
             btnCurrentLocation.hide();
         }
 
-//        if (user_id != 0) {
-//            homePresenter = new HomePresenter(this);
-//            homePresenter.requestDataFromServer(user_id);
-//        }
-
         //klik tombol lihat gambar
         vGambar.setOnClickListener(this);
 
@@ -170,6 +169,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
         //klik tombol in location
         btnInLocation.setOnClickListener(this);
 
+
+
         return root;
     }
 
@@ -183,6 +184,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
             mapView.onResume();
             mapView.getMapAsync(this);
         }
+
+
     }
 
     @Override
@@ -195,16 +198,31 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
         editor.putString(Constans.TAG_RESPONDENT_LAT, String.valueOf(respondent.getLatitude()));
         editor.putString(Constans.TAG_RESPONDENT_LONG, String.valueOf(respondent.getLongitude()));
         editor.apply();
-    }
 
-//    @Override
-//    public void setDataToView(Accident accident) {
-//        tvAddress.setText(accident.getLatitude() +", "+ accident.getLongitude());
-//
-//        latitude2 = accident.getLatitude();
-//        longitude2 = accident.getLongitude();
-//
-//    }
+        // GET CURRENT LOCATION
+        FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(getActivity());
+        mFusedLocation.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null){
+                    // Do it all with location
+                    Log.d("My Current location", "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+
+                    Current = CameraPosition.builder().target(latLng).zoom(16).bearing(0).tilt(0).build();
+
+                    BitmapDrawable bitmapdrawcurrent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
+                    Bitmap bcurrent = bitmapdrawcurrent.getBitmap();
+                    Bitmap marker_current = Bitmap.createScaledBitmap(bcurrent, width, height, false);
+
+                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(marker_current));
+                    mMap.addMarker(markerOptions);
+                }
+            }
+        });
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -226,10 +244,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
 
         if (user_id != 0) {
             mMap.addMarker(place2);
-            CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(13).bearing(0).tilt(0).build();
+            CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(16).bearing(0).tilt(0).build();
             mMap.moveCamera((CameraUpdateFactory.newCameraPosition(AccidentLocation)));
         } else {
-            CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(13).bearing(0).tilt(0).build();
+            CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(16).bearing(0).tilt(0).build();
             mMap.moveCamera((CameraUpdateFactory.newCameraPosition(AccidentLocation)));
         }
 
@@ -294,13 +312,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
                 break;
 
             case R.id.btn_current_location:
+//                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
                 CameraPosition Respondent = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(13).bearing(0).tilt(0).build();
                 mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Respondent)));
                 break;
 
             case R.id.btn_current_location2:
-                CameraPosition Respondent1 = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(13).bearing(0).tilt(0).build();
-                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Respondent1)));
+                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
+//                CameraPosition Respondent1 = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(13).bearing(0).tilt(0).build();
+//                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Respondent1)));
                 break;
 
             case R.id.btn_in_location:

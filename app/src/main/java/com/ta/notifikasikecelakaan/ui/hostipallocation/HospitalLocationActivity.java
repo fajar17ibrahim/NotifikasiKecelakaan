@@ -40,15 +40,25 @@ import com.ta.notifikasikecelakaan.directionhelpers.FetchURL;
 import com.ta.notifikasikecelakaan.directionhelpers.TaskLoadedCallback;
 import com.ta.notifikasikecelakaan.model.Hospital;
 import com.ta.notifikasikecelakaan.model.Respondent;
+import com.ta.notifikasikecelakaan.network.ApiClient;
+import com.ta.notifikasikecelakaan.network.ApiInterface;
 import com.ta.notifikasikecelakaan.ui.policeofficelocation.PoliceOfficeLocationPresenter;
 import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfileContract;
 import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfilePresenter;
+import com.ta.notifikasikecelakaan.utils.ApiUtils;
 import com.ta.notifikasikecelakaan.utils.Constans;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HospitalLocationActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, View.OnClickListener {
 
     private SharedPreferences sharedPreferences;
-    private String idRespondent;
+    private String respondentId;
+    private String historyId;
+    private String hospitalId;
     private GoogleMap mMap;
 
     private MapView mapView;
@@ -68,6 +78,8 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
     private Double longitude = 0.0;
     private Double latitude2 = 0.0;
     private Double longitude2 = 0.0;
+
+    private Button btnUpdateStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,12 +103,16 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
         });
 
         sharedPreferences = getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        respondentId = sharedPreferences.getString(Constans.TAG_RESPONDENT_ID, "0");
+        historyId = sharedPreferences.getString(Constans.TAG_HISTORY_ID, "0");
 
         tvName = (TextView) findViewById(R.id.txt_name);
         tvAddress = (TextView) findViewById(R.id.txt_address);
 
+        btnUpdateStatus = (Button) findViewById(R.id.btn_go_rs);
+        btnUpdateStatus.setOnClickListener(this);
 
-        getDirection = findViewById(R.id.btnGetDirection);
+        getDirection = findViewById(R.id.btn_go_location);
         getDirection.setOnClickListener(this);
 
         btnCurrentLocation = (FloatingActionButton) findViewById(R.id.btn_current_location);
@@ -109,36 +125,37 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
             mapView.getMapAsync(this);
         }
 
+        // GET CURRENT LOCATION
+        FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null){
+                    // Do it all with location
+                    Log.d("My Current location", "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
 
-//        // GET CURRENT LOCATION
-//        FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
-//        mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-//            @Override
-//            public void onSuccess(Location location) {
-//                if (location != null){
-//                    // Do it all with location
-//                    Log.d("My Current location", "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
-//                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//                    MarkerOptions markerOptions = new MarkerOptions();
-//                    markerOptions.position(latLng);
-//
-//                    Current = CameraPosition.builder().target(latLng).zoom(13).bearing(0).tilt(0).build();
-//
-//                    BitmapDrawable bitmapdrawcurrent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
-//                    Bitmap bcurrent = bitmapdrawcurrent.getBitmap();
-//                    Bitmap marker_current = Bitmap.createScaledBitmap(bcurrent, width, height, false);
-//
-//                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(marker_current));
-//                    mMap.addMarker(markerOptions);
-//                }
-//            }
-//        });
+                    Current = CameraPosition.builder().target(latLng).zoom(16).bearing(0).tilt(0).build();
+
+                    BitmapDrawable bitmapdrawcurrent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
+                    Bitmap bcurrent = bitmapdrawcurrent.getBitmap();
+                    Bitmap marker_current = Bitmap.createScaledBitmap(bcurrent, width, height, false);
+
+                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(marker_current));
+                    mMap.addMarker(markerOptions);
+                }
+            }
+        });
+
         latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LAT, "0.0"));
         longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LONG, "0.0"));
 
         Bundle data = getIntent().getExtras();
 
         tvName.setText(data.getString(Constans.TAG_HOSPITAL_NAME));
+        hospitalId = data.getString(Constans.TAG_HOSPITAL_ID);
         tvAddress.setText(data.getString(Constans.TAG_HOSPITAL_ADDRESS));
         latitude2 = data.getDouble(Constans.TAG_RESPONDENT_LAT);
         longitude2 = data.getDouble(Constans.TAG_RESPONDENT_LONG);
@@ -197,14 +214,37 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnGetDirection:
+            case R.id.btn_go_location:
+                break;
+
+            case R.id.btn_go_rs:
+                updateStatus();
                 break;
 
             case R.id.btn_current_location:
-//                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
-                CameraPosition Respondent = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(13).bearing(0).tilt(0).build();
-                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Respondent)));
+                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
+
                 break;
         }
+    }
+
+    private void updateStatus() {
+
+        ApiInterface apiClient = ApiClient.getClient(ApiUtils.BASE_URL_API).create(ApiInterface.class);
+
+        Call<ResponseBody> call = apiClient.requestUpdateStatus(historyId, "Dibawa ke Rumah Sakit", respondentId, hospitalId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d("Responde Body ", response.toString());
+                Toast.makeText(HospitalLocationActivity.this, response.toString(), Toast.LENGTH_LONG).show();
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(HospitalLocationActivity.this, t.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

@@ -2,7 +2,9 @@
 package com.ta.notifikasikecelakaan;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -34,6 +36,9 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 
 public class MainActivity extends AppCompatActivity implements TaskLoadedCallback, ProfileContract.View {
@@ -134,61 +139,15 @@ public class MainActivity extends AppCompatActivity implements TaskLoadedCallbac
             currentPolyline.remove();
         currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
     }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        getDataNetwork();
-//
-//    }
-//
-//    private void getNotif(String title, String messages){
-//        Intent intent = new Intent(MainActivity.this, HomeFragment.class);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
-//        NotificationCompat.Builder mBuilder =
-//                (NotificationCompat.Builder) new NotificationCompat.Builder(MainActivity.this,"1")
-//                        .setSmallIcon(R.mipmap.ic_launcher)
-//                        .setContentTitle(title)
-//                        .setContentText(messages)
-//                        .setContentIntent(pendingIntent)
-//                        .setAutoCancel(true)
-//                        .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.FLAG_AUTO_CANCEL);
-//
-//        NotificationManager notificationManager =
-//                (NotificationManager) MainActivity.this.getSystemService(Context.NOTIFICATION_SERVICE);
-//        notificationManager.notify(1,mBuilder.build());
-//    }
-
-//    private void getDataNetwork(){
-//        getObservable().subscribeWith(getObserver());
-//    }
-//
-//    public Observable<Accident> getObservable(){
-//        return ApiClient.getClient(ApiUtils.BASE_URL_API).create(ApiInterface.class)
-//                .getAccidentNotification()
-//                .subscribeOn(Schedulers.io()) //async
-//                .observeOn(AndroidSchedulers.mainThread());
-//    }
-//
-//    //3
-//    public DisposableObserver<Accident> getObserver(){
-//        return new DisposableObserver<Accident>() {
-//            @Override
-//            public void onNext(Accident accident) {
-//                getNotif("Terjadi Kecelakaan : "+ accident.getName(),accident.getAddress());
-//                Log.d("disini", "onNext: "+accident.getAddress());
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                Log.d("disini", "onNext: "+e.getMessage());
-//            }
-//
-//            @Override
-//            public void onComplete() {
-//                Log.d("disini", "onNext: complete");
-//            }
-//
-//        };
-//    }
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this).setTitle("Konfirmasi")
+                .setMessage("Anda hanya akan menerima notifikasi pada notification bar dan tidak bisa melihat informasi mengenai lokasi korban. Anda yakin ingin menutup aplikasi ?")
+                .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        moveTaskToBack(true);
+                    }
+                }).setNegativeButton("Tidak", null).show();
+    }
 }

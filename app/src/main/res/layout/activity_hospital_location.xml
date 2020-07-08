@@ -66,15 +66,33 @@
         android:layout_margin="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/btnGetDirection"
-            android:background="@drawable/border_radius"
-            android:padding="15dp"
-            android:text="Menuju Rumah Sakit"
-            android:textColor="#FFFFFF"
-            android:textSize="12dp"
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/btn_go_location"
+                android:background="@drawable/border_radius_blue"
+                android:padding="15dp"
+                android:text="NAVIGASI"
+                android:textColor="#FFFFFF"
+                android:textSize="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/btn_go_rs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/border_radius"
+                android:padding="15dp"
+                android:text="BAWA KORBAN"
+                android:textColor="#FFFFFF"
+                android:textSize="12dp" />
+        </LinearLayout>
 
     </RelativeLayout>
 

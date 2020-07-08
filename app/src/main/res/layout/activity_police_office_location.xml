@@ -68,9 +68,9 @@
         android:layout_height="wrap_content">
         <Button
             android:id="@+id/btnGetDirection"
-            android:background="@drawable/border_radius"
+            android:background="@drawable/border_radius_blue"
             android:padding="15dp"
-            android:text="Menuju Kantor Polisi"
+            android:text="NAVIGASI"
             android:textColor="#FFFFFF"
             android:textSize="12dp"
             android:layout_width="match_parent"
