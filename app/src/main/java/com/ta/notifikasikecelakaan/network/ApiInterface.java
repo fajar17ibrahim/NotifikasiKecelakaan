@@ -85,7 +85,7 @@ public interface ApiInterface {
     Call<Hospital> getHospitalLocation(@Query("id") String hospitalId);
 
     @GET("gallery.php")
-    Call<List<Gallery>> getGallery();
+    Call<List<Gallery>> getGallery(@Query("id") String historyId);
 
     @GET("gallery_details.php")
     Call<Gallery> getGalleryDetail(@Query("gallery_id") String galleryId);

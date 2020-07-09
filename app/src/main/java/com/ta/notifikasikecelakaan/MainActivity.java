@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements TaskLoadedCallbac
         tvTelp = (TextView) hView.findViewById(R.id.tv_telp);
 
         SharedPreferences.Editor editor = sharedpreferences.edit();
-        editor.putString(Constans.TAG_RESPONDENT_ID, String.valueOf(respondent.getRespondent_id()));
         editor.putString(Constans.TAG_RESPONDENT_DISTANCE, String.valueOf(respondent.getDistance()));
         editor.putString(Constans.TAG_RESPONDENT_LAT, String.valueOf(respondent.getLatitude()));
         editor.putString(Constans.TAG_RESPONDENT_LONG, String.valueOf(respondent.getLongitude()));

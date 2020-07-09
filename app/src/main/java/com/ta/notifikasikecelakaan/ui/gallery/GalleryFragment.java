@@ -1,6 +1,8 @@
 package com.ta.notifikasikecelakaan.ui.gallery;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +28,9 @@ import java.util.List;
 
 public class GalleryFragment extends Fragment implements GalleryContract.View {
 
+    private SharedPreferences sharedPreferences;
+    private String historyId;
+
     private RecyclerView rvGallery;
     private List<Gallery> list;
     private ListGalleryAdapter listGaleryAdapter;
@@ -39,6 +44,9 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
 
         View root = inflater.inflate(R.layout.fragment_gallery, container, false);
 
+        sharedPreferences = getContext().getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        historyId = sharedPreferences.getString(Constans.TAG_HISTORY_ID, "0");
+
         pbLoading = (ProgressBar) root.findViewById(R.id.pb_loading);
         tvEmpty =(TextView) root.findViewById(R.id.tv_empty);
 
@@ -48,7 +56,7 @@ public class GalleryFragment extends Fragment implements GalleryContract.View {
         showRecyclerList();
 
         galleryPresenter = new GalleryPresenter(this);
-        galleryPresenter.requestDataFromServer();
+        galleryPresenter.requestDataFromServer(historyId);
 
         return root;
     }

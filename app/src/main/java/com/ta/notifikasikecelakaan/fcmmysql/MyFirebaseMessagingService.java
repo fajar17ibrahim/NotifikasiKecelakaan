@@ -57,18 +57,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationChannel.setLightColor(Color.GREEN);
             notificationManager.createNotificationChannel(notificationChannel);
 
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-
-        } else {
+        }
 
             Intent iMainActivity = new Intent(getApplicationContext(), MainActivity.class);
             iMainActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, iMainActivity, PendingIntent.FLAG_UPDATE_CURRENT);
 
             NotificationCompat.Builder mBuilder =
-                    (NotificationCompat.Builder) new NotificationCompat.Builder(this, "1")
+                    (NotificationCompat.Builder) new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle(remoteMessage.getNotification().getTitle())
                             .setContentText(remoteMessage.getNotification().getBody())
@@ -83,7 +79,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-        }
+
 
     }
 

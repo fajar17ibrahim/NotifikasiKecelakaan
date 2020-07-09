@@ -13,7 +13,7 @@ public interface GalleryContract {
             void onFailure(Throwable t);
         }
 
-        void getGallery(OnFinishedListener onFinishedListener);
+        void getGallery(OnFinishedListener onFinishedListener, String history_id);
 
     }
 
@@ -25,6 +25,6 @@ public interface GalleryContract {
     }
 
     interface Presenter{
-        void requestDataFromServer();
+        void requestDataFromServer(String history_id);
     }
 }

@@ -91,8 +91,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
     private TextView tvAddress, tvDistance;
     private RelativeLayout rlNotifInfo;
 
-    private Double latitude = 0.0;
-    private Double longitude = 0.0;
+    private Double latitude;
+    private Double longitude;
     private Double latitude2 = 0.0;
     private Double longitude2 = 0.0;
 
@@ -101,14 +101,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
+//        currentLocation();
+
         sharedPreferences = getActivity().getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         idRespondent = sharedPreferences.getString(Constans.TAG_RESPONDENT_ID, "0");
         user_id = sharedPreferences.getInt(Constans.TAG_USER_ID, 0);
-
-        latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LAT, "0.0"));
-        longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LONG, "0.0"));
-        latitude2 = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LAT, "0.0"));
-        longitude2 = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LONG, "0.0"));
 
         pbLoading = (ProgressBar) root.findViewById(R.id.pb_loading);
 
@@ -126,6 +123,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
 
         profilePresenter = new ProfilePresenter(this);
         profilePresenter.requestDataFromServer(idRespondent);
+
+        latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LAT, "0.0"));
+        longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LONG, "0.0"));
+        latitude2 = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LAT, "0.0"));
+        longitude2 = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LONG, "0.0"));
 
         if(user_id != 0) {
             rlNotifInfo.setVisibility(View.VISIBLE);
@@ -172,30 +174,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
         return root;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        mapView = (MapView) view.findViewById(R.id.map);
-        if(mapView != null) {
-            mapView.onCreate(null);
-            mapView.onResume();
-            mapView.getMapAsync(this);
-        }
-
-
-    }
-
-    @Override
-    public void setDataToView(Respondent respondent) {
-        tvDistance.setText(respondent.getDistance() +" KM dari lokasi anda saat ini");
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(Constans.TAG_RESPONDENT_ID, String.valueOf(respondent.getRespondent_id()));
-        editor.putString(Constans.TAG_RESPONDENT_DISTANCE, String.valueOf(respondent.getDistance()));
-        editor.putString(Constans.TAG_RESPONDENT_LAT, String.valueOf(respondent.getLatitude()));
-        editor.putString(Constans.TAG_RESPONDENT_LONG, String.valueOf(respondent.getLongitude()));
-        editor.apply();
+    private void currentLocation() {
 
         // GET CURRENT LOCATION
         FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(getActivity());
@@ -210,6 +189,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
                     markerOptions.position(latLng);
 
                     Current = CameraPosition.builder().target(latLng).zoom(16).bearing(0).tilt(0).build();
+                    mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
 
                     BitmapDrawable bitmapdrawcurrent = (BitmapDrawable)getResources().getDrawable(R.drawable.icon_marker_male);
                     Bitmap bcurrent = bitmapdrawcurrent.getBitmap();
@@ -220,6 +200,32 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
                 }
             }
         });
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mapView = (MapView) view.findViewById(R.id.map);
+        if(mapView != null) {
+            mapView.onCreate(null);
+            mapView.onResume();
+            mapView.getMapAsync(this);
+        }
+
+    }
+
+    @Override
+    public void setDataToView(Respondent respondent) {
+        tvDistance.setText(respondent.getDistance() +" KM dari lokasi anda saat ini");
+
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString(Constans.TAG_RESPONDENT_DISTANCE, String.valueOf(respondent.getDistance()));
+//        editor.putString(Constans.TAG_RESPONDENT_LAT, String.valueOf(respondent.getLatitude()));
+//        editor.putString(Constans.TAG_RESPONDENT_LONG, String.valueOf(respondent.getLongitude()));
+//        editor.apply();
+
+
     }
 
     @Override
@@ -245,8 +251,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
             CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude2, longitude2)).zoom(16).bearing(0).tilt(0).build();
             mMap.moveCamera((CameraUpdateFactory.newCameraPosition(AccidentLocation)));
         } else {
-            CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(16).bearing(0).tilt(0).build();
-            mMap.moveCamera((CameraUpdateFactory.newCameraPosition(AccidentLocation)));
+            currentLocation();
+
+//            CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(16).bearing(0).tilt(0).build();
+//            mMap.moveCamera((CameraUpdateFactory.newCameraPosition(AccidentLocation)));
         }
     }
 

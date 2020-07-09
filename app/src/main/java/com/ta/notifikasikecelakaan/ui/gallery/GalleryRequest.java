@@ -16,10 +16,10 @@ import retrofit2.Response;
 
 public class GalleryRequest implements GalleryContract.Model {
     @Override
-    public void getGallery(final OnFinishedListener onFinishedListener) {
+    public void getGallery(final OnFinishedListener onFinishedListener, String historyId) {
         ApiInterface apiInterface = ApiClient.getClient(ApiUtils.BASE_URL_API).create(ApiInterface.class);
 
-        Call<List<Gallery>> call = apiInterface.getGallery();
+        Call<List<Gallery>> call = apiInterface.getGallery(historyId);
         call.enqueue(new Callback<List<Gallery>>() {
             @Override
             public void onResponse(Call<List<Gallery>> call, Response<List<Gallery>> response) {

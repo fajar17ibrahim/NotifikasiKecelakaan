@@ -32,10 +32,10 @@ public class GalleryPresenter implements GalleryContract.Presenter, GalleryContr
     }
 
     @Override
-    public void requestDataFromServer() {
+    public void requestDataFromServer(String history_id) {
         if ( galleryView != null ) {
             galleryView.showProgress();
         }
-        galleryModel.getGallery(this);
+        galleryModel.getGallery(this, history_id);
     }
 }
