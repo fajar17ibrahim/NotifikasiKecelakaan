@@ -17,15 +17,12 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
 import retrofit2.http.Part;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 
@@ -42,6 +39,8 @@ public interface ApiInterface {
     Call<ResponseBody> requestRegister(@Field("name") String name,
                                        @Field("phone") String phone,
                                        @Field("password") String password,
+                                       @Field("latitude") Double latitude,
+                                       @Field("longitude") Double longitude,
                                        @Field("token") String token);
 
     @FormUrlEncoded
@@ -54,6 +53,18 @@ public interface ApiInterface {
                                            @Field("status") String status,
                                            @Field("respondent_id") String respondent_id,
                                            @Field("hospital_id") String hospital_id);
+
+    @FormUrlEncoded
+    @POST("update_profile.php")
+    Call<ResponseBody> updateRespondent(@Field("name") String name,
+                                        @Field("phone") String phone,
+                                        @Query("id") String idRespondent);
+
+    @FormUrlEncoded
+    @POST("update_password.php")
+    Call<ResponseBody> updatePassword(@Field("old_password") String old_password,
+                                      @Field("new_password") String new_password,
+                                      @Query("id") String idRespondent);
 
     @Multipart
     @POST("upload_image.php")
@@ -98,9 +109,7 @@ public interface ApiInterface {
     @GET("accident.php")
     Call<Accident> getAccident(@Query("id") int user_id);
 
-    @PUT("respondent.php")
-    Call<RespondentUpdate> updateRespondent(@Body RespondentUpdate respondentUpdate,
-                                            @Query("id") String idRespondent);
+
 
 
 }

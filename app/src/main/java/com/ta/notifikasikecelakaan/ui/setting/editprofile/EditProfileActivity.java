@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,10 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ta.notifikasikecelakaan.MainActivity;
 import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.model.Respondent;
-import com.ta.notifikasikecelakaan.model.RespondentUpdate;
 import com.ta.notifikasikecelakaan.network.ApiInterface;
+import com.ta.notifikasikecelakaan.ui.login.LoginActivity;
 import com.ta.notifikasikecelakaan.utils.ApiUtils;
 import com.ta.notifikasikecelakaan.utils.Constans;
 
@@ -24,6 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.io.IOException;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,6 +38,8 @@ public class EditProfileActivity extends AppCompatActivity implements ProfileCon
     private SharedPreferences sharedpreferences;
     private ProfilePresenter profilePresenter;
     private String idRespondent;
+    private String sName;
+    private String sPhone;
 
     private ApiInterface mApiService;
     private ProgressDialog loading;
@@ -61,7 +68,6 @@ public class EditProfileActivity extends AppCompatActivity implements ProfileCon
 
         eName = (EditText) findViewById(R.id.txt_name);
         ePhone = (EditText) findViewById(R.id.txt_phone);
-        eFamPhone = (EditText) findViewById(R.id.txt_fam_phone);
         btnUpdate = (Button) findViewById(R.id.btn_update);
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -74,11 +80,17 @@ public class EditProfileActivity extends AppCompatActivity implements ProfileCon
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RespondentUpdate respondentUpdate = new RespondentUpdate();
-                respondentUpdate.setName(eName.toString());
-                respondentUpdate.setPhone(ePhone.toString());
-                loading = ProgressDialog.show(mContext, null, "Harap Tunggu...", true, false);
-                requestRespondentUpdate(respondentUpdate, idRespondent);
+
+                sName = eName.getText().toString();
+                sPhone = ePhone.getText().toString();
+
+                if (sName.trim().length() == 0 || sPhone.trim().length() == 0 ) {
+                    Toast.makeText(mContext, "Field tidak boleh kosong! ", Toast.LENGTH_SHORT).show();
+                } else {
+                    loading = ProgressDialog.show(mContext, null, "Harap Tunggu...", true, false);
+                    requestRespondentUpdate(eName.getText().toString(),ePhone.getText().toString(), idRespondent);
+                }
+
             }
         });
     }
@@ -97,7 +109,6 @@ public class EditProfileActivity extends AppCompatActivity implements ProfileCon
     public void setDataToView(Respondent respondent) {
         eName.setText(respondent.getName());
         ePhone.setText(respondent.getPhone());
-        eFamPhone.setText(respondent.getPhone());
     }
 
     @Override
@@ -106,27 +117,30 @@ public class EditProfileActivity extends AppCompatActivity implements ProfileCon
         Toast.makeText(this, "Data gagal dimuat.", Toast.LENGTH_LONG).show();
     }
 
-    private void requestRespondentUpdate(RespondentUpdate respondent, String idRespondent){
+    private void requestRespondentUpdate(String name, String phone, String idRespondent){
         mApiService = ApiUtils.getAPIService();
-        mApiService.updateRespondent(respondent, idRespondent)
-                .enqueue(new Callback<RespondentUpdate>() {
+        mApiService.updateRespondent(name, phone, idRespondent)
+                .enqueue(new Callback<ResponseBody>() {
                     @Override
-                    public void onResponse(Call<RespondentUpdate> call, Response<RespondentUpdate> response) {
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()){
                             loading.dismiss();
                             try {
-                                JSONObject jsonRESULTS = new JSONObject(response.body().toString());
-                                if (jsonRESULTS.getString("success").equals("1")){
-                                    // Jika update berhasil maka data nama yang ada di response API
+                                JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                                if (jsonRESULTS.getString("success").equals("1")) {
+                                    // Jika register berhasil maka data nama yang ada di response API
                                     String message = jsonRESULTS.getString("message");
                                     Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
-                                    finish();
+                                    Intent intent = new Intent(mContext, MainActivity.class);
+                                    startActivity(intent);
                                 } else {
-                                    // Jika update gagal
+                                    // Jika register gagal
                                     String error_message = jsonRESULTS.getString("message");
                                     Toast.makeText(mContext, error_message, Toast.LENGTH_SHORT).show();
                                 }
                             } catch (JSONException e) {
+                                e.printStackTrace();
+                            } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         } else {
@@ -136,9 +150,9 @@ public class EditProfileActivity extends AppCompatActivity implements ProfileCon
                     }
 
                     @Override
-                    public void onFailure(Call<RespondentUpdate> call, Throwable t) {
+                    public void onFailure(Call<ResponseBody> call, Throwable t) {
                         Log.e("debug", "onFailure: ERROR > " + t.getMessage());
-                        Toast.makeText(mContext, "Koneksi Internet Bermasalah", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, t.toString(), Toast.LENGTH_SHORT).show();
                         loading.dismiss();
                     }
                 });

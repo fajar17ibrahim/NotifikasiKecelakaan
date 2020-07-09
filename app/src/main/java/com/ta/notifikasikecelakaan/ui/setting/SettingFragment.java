@@ -1,7 +1,9 @@
 package com.ta.notifikasikecelakaan.ui.setting;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -41,6 +43,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
     private String token;
 
     private Button btnOut;
+    private String historyId;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
 
         sharedPreferences = getActivity().getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         token = sharedPreferences.getString(Constans.TAG_TOKEN, null);
+        historyId = sharedPreferences.getString(Constans.TAG_HISTORY_ID, "0");
 
         tvEditProfile = (TextView) root.findViewById(R.id.tv_edit_profile);
         tvEditProfile.setOnClickListener(this);
@@ -72,6 +76,14 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         loading.dismiss();
                         Log.d("Response body", response.toString());
+                        sharedPreferences.edit().remove(Constans.TAG_RESPONDENT_ID).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_RESPONDENT_LAT).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_RESPONDENT_LONG).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_HISTORY_ID).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_USER_ID).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_USER_LAT).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_USER_LONG).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_SESSION).commit();
                         Intent iLogin = new Intent(getContext(), LoginActivity.class);
                         startActivity(iLogin);
                     }
@@ -97,10 +109,22 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
                 break;
 
             case R.id.btn_out:
-                loading = ProgressDialog.show(mContext, null, "Harap Tunggu...", true, false);
-                sharedPreferences.edit().remove(Constans.TAG_RESPONDENT_ID).commit();
-                sharedPreferences.edit().remove(Constans.TAG_SESSION).commit();
-                requestLogout();
+                if (historyId != "0") {
+                    new AlertDialog.Builder(getContext()).setTitle("Konfirmasi")
+                            .setMessage("Anda sedang menerima notifikasi. Tekan tombol 'Ok, Terimakasih!' pada halaman notifikasi untuk melakukan logout")
+                            .setPositiveButton("OK", null).show();
+                } else {
+                    new AlertDialog.Builder(getContext()).setTitle("Konfirmasi")
+                            .setMessage("Anda yakin ingin logout ?")
+                            .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    loading = ProgressDialog.show(mContext, null, "Harap Tunggu...", true, false);
+                                    requestLogout();
+                                }
+                            }).setNegativeButton("Tidak", null).show();
+                }
+
                 break;
         }
     }

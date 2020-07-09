@@ -44,16 +44,6 @@
                 android:textSize="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-            <EditText
-                android:layout_marginTop="15dp"
-                android:id="@+id/txt_fam_phone"
-                android:hint="Nomor Telepon Keluarga"
-                android:inputType="number"
-                android:background="@drawable/border"
-                android:padding="15dp"
-                android:textSize="12dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
 
             <Button
                 android:id="@+id/btn_update"

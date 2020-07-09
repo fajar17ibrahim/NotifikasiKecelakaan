@@ -2,47 +2,64 @@ package com.ta.notifikasikecelakaan.ui.register;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.ta.notifikasikecelakaan.MainActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.network.ApiInterface;
 import com.ta.notifikasikecelakaan.ui.login.LoginActivity;
 import com.ta.notifikasikecelakaan.utils.ApiUtils;
-import com.ta.notifikasikecelakaan.utils.Constans;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
-public class RegistrasiActivity extends AppCompatActivity implements View.OnClickListener {
+public class RegistrasiActivity extends AppCompatActivity implements View.OnClickListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
 
-    private SharedPreferences sharedPreferences;
+    private Location mylocation;
+    private GoogleApiClient googleApiClient;
+    private final static int REQUEST_CHECK_SETTINGS_GPS=0x1;
+    private final static int REQUEST_ID_MULTIPLE_PERMISSIONS=0x2;
 
     private String token = "null";
     private ProgressDialog loading;
@@ -50,15 +67,29 @@ public class RegistrasiActivity extends AppCompatActivity implements View.OnClic
     private Context mContext;
     private ApiInterface mApiService;
 
-    ProgressDialog pDialog;
+    private CameraPosition Current;
 
-    EditText eNama, eTelp, eTelpKel, ePass, eConfPass;
-    String nama, telp, telpKel, pass, confPass;
+    private ProgressDialog pDialog;
+
+    private EditText eNama;
+    private EditText eTelp;
+    private EditText ePass;
+    private EditText eConfPass;
+    private String nama;
+    private String telp;
+    private String pass;
+    private String confPass;
+
+    private Double latitude;
+    private Double longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrasi);
+
+        setUpGClient();
+        currentLocation();
 
         mContext = this;
 
@@ -76,17 +107,6 @@ public class RegistrasiActivity extends AppCompatActivity implements View.OnClic
                 finish();
             }
         });
-
-//        conMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-//        {
-//            if (conMgr.getActiveNetworkInfo() != null
-//                    && conMgr.getActiveNetworkInfo().isAvailable()
-//                    && conMgr.getActiveNetworkInfo().isConnected()) {
-//            } else {
-//                Toast.makeText(getApplicationContext(), "No Internet Connection",
-//                        Toast.LENGTH_LONG).show();
-//            }
-//        }
 
         Button btnDaftar = (Button) findViewById(R.id.btn_daftar);
         eNama = (EditText) findViewById(R.id.nama);
@@ -119,15 +139,14 @@ public class RegistrasiActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-
     private void requestRegister(final String name, final String phone, final String password) {
         Log.d("Result ", phone + " " + password);
         mApiService = ApiUtils.getAPIService();
-        mApiService.requestRegister(name, phone, password, token)
+        mApiService.requestRegister(name, phone, password, latitude, longitude, token)
                 .enqueue(new Callback<ResponseBody>() {
 
                     @Override
-                    public void onResponse(Call<ResponseBody> call, retrofit2.Response<ResponseBody> response) {
+                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                         if (response.isSuccessful()) {
                             loading.dismiss();
                             try {
@@ -163,13 +182,177 @@ public class RegistrasiActivity extends AppCompatActivity implements View.OnClic
                 });
     }
 
-//    private void showDialog() {
-//        if (!pDialog.isShowing())
-//            pDialog.show();
-//    }
+    public void currentLocation() {
+
+//      GET CURRENT LOCATION
+        FusedLocationProviderClient mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null){
+                    // Do it all with location
+                    Log.d("My Current location", "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+
+                }
+            }
+        });
+
+    }
+
+    private synchronized void setUpGClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, 0, this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        googleApiClient.connect();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+//        mylocation = location;
+//        if (mylocation != null) {
+//            latitude = mylocation.getLatitude();
+//            longitude = mylocation.getLongitude();
 //
-//    private void hideDialog() {
-//        if (pDialog.isShowing())
-//            pDialog.dismiss();
-//    }
+//        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        checkPermissions();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        //Do whatever you need
+        //You can display a message here
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        //You can display a message here
+    }
+
+    private void getMyLocation(){
+        if(googleApiClient!=null) {
+            if (googleApiClient.isConnected()) {
+                int permissionLocation = ContextCompat.checkSelfPermission(RegistrasiActivity.this,
+                        Manifest.permission.ACCESS_FINE_LOCATION);
+                if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+                    mylocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                    LocationRequest locationRequest = new LocationRequest();
+                    locationRequest.setInterval(3000);
+                    locationRequest.setFastestInterval(3000);
+                    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                    LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                            .addLocationRequest(locationRequest);
+                    builder.setAlwaysShow(true);
+
+                    PendingResult<LocationSettingsResult> result =
+                            LocationServices.SettingsApi
+                                    .checkLocationSettings(googleApiClient, builder.build());
+                    result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+
+                        @Override
+                        public void onResult(LocationSettingsResult result) {
+                            final Status status = result.getStatus();
+                            switch (status.getStatusCode()) {
+                                case LocationSettingsStatusCodes.SUCCESS:
+                                    // All location settings are satisfied.
+                                    // You can initialize location requests here.
+                                    int permissionLocation = ContextCompat
+                                            .checkSelfPermission(RegistrasiActivity.this,
+                                                    Manifest.permission.ACCESS_FINE_LOCATION);
+                                    if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+                                        mylocation = LocationServices.FusedLocationApi
+                                                .getLastLocation(googleApiClient);
+                                    }
+                                    break;
+                                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                                    // Location settings are not satisfied.
+                                    // But could be fixed by showing the user a dialog.
+                                    try {
+                                        // Show the dialog by calling startResolutionForResult(),
+                                        // and check the result in onActivityResult().
+                                        // Ask to turn on GPS automatically
+                                        status.startResolutionForResult(RegistrasiActivity.this,
+                                                REQUEST_CHECK_SETTINGS_GPS);
+                                    } catch (IntentSender.SendIntentException e) {
+                                        // Ignore the error.
+                                    }
+                                    break;
+                                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                                    // Location settings are not satisfied.
+                                    // However, we have no way
+                                    // to fix the
+                                    // settings so we won't show the dialog.
+                                    // finish();
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS_GPS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        getMyLocation();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        finish();
+                        break;
+                }
+                break;
+        }
+    }
+
+    private void checkPermissions(){
+        int permissionLocation = ContextCompat.checkSelfPermission(RegistrasiActivity.this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (permissionLocation != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
+            if (!listPermissionsNeeded.isEmpty()) {
+                ActivityCompat.requestPermissions(this,
+                        listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            }
+        }else{
+            getMyLocation();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        int permissionLocation = ContextCompat.checkSelfPermission(RegistrasiActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+            getMyLocation();
+        }
+    }
 }

@@ -105,6 +105,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
         idRespondent = sharedPreferences.getString(Constans.TAG_RESPONDENT_ID, "0");
         user_id = sharedPreferences.getInt(Constans.TAG_USER_ID, 0);
 
+        latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LAT, "0.0"));
+        longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LONG, "0.0"));
+        latitude2 = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LAT, "0.0"));
+        longitude2 = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LONG, "0.0"));
+
         pbLoading = (ProgressBar) root.findViewById(R.id.pb_loading);
 
         btnCariRute = (Button) root.findViewById(R.id.btnGetDirection);
@@ -121,11 +126,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
 
         profilePresenter = new ProfilePresenter(this);
         profilePresenter.requestDataFromServer(idRespondent);
-
-        latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LAT, "0.0"));
-        longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LONG, "0.0"));
-        latitude2 = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LAT, "0.0"));
-        longitude2 = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LONG, "0.0"));
 
         if(user_id != 0) {
             rlNotifInfo.setVisibility(View.VISIBLE);
@@ -168,8 +168,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
 
         //klik tombol in location
         btnInLocation.setOnClickListener(this);
-
-
 
         return root;
     }
@@ -250,9 +248,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
             CameraPosition AccidentLocation = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(16).bearing(0).tilt(0).build();
             mMap.moveCamera((CameraUpdateFactory.newCameraPosition(AccidentLocation)));
         }
-
-
-
     }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
@@ -325,6 +320,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback, TaskLo
 
             case R.id.btn_in_location:
                     sharedPreferences.edit().remove(Constans.TAG_USER_ID).commit();
+                    sharedPreferences.edit().remove(Constans.TAG_HISTORY_ID).commit();
                     Intent iLogin = new Intent(getActivity(), LoginActivity.class);
                     startActivity(iLogin);
                 break;

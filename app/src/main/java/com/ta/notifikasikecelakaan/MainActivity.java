@@ -37,10 +37,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-
-
 public class MainActivity extends AppCompatActivity implements TaskLoadedCallback, ProfileContract.View {
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -122,6 +118,13 @@ public class MainActivity extends AppCompatActivity implements TaskLoadedCallbac
         hView =  navigationView.getHeaderView(0);
         tvNama = (TextView) hView.findViewById(R.id.tv_name);
         tvTelp = (TextView) hView.findViewById(R.id.tv_telp);
+
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString(Constans.TAG_RESPONDENT_ID, String.valueOf(respondent.getRespondent_id()));
+        editor.putString(Constans.TAG_RESPONDENT_DISTANCE, String.valueOf(respondent.getDistance()));
+        editor.putString(Constans.TAG_RESPONDENT_LAT, String.valueOf(respondent.getLatitude()));
+        editor.putString(Constans.TAG_RESPONDENT_LONG, String.valueOf(respondent.getLongitude()));
+        editor.apply();
 
         tvNama.setText(respondent.getName());
         tvTelp.setText(respondent.getPhone());
