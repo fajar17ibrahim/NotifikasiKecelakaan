@@ -55,6 +55,10 @@ public interface ApiInterface {
                                            @Field("hospital_id") String hospital_id);
 
     @FormUrlEncoded
+    @POST("update_normal.php")
+    Call<ResponseBody> requestUpdateStatusNormal(@Field("history_id") String historyId);
+
+    @FormUrlEncoded
     @POST("update_profile.php")
     Call<ResponseBody> updateRespondent(@Field("name") String name,
                                         @Field("phone") String phone,
@@ -73,16 +77,10 @@ public interface ApiInterface {
                                   @Part("respondent_id") RequestBody respondent_id);
 
     @GET("police_office.php")
-    Call<List<PoliceOffice>> getPoliceOffice();
-
-    @GET("police_office.php")
-    Call<PoliceOffice> getPoliceOfficeLocation(@Query("id") String policeOfficeId);
+    Call<List<PoliceOffice>> getPoliceOffice(@Query("history_id") String history_id);
 
     @GET("hospitals.php")
-    Call<List<Hospital>> getHospitals();
-
-    @GET("hospitals.php")
-    Call<Hospital> getHospitalLocation(@Query("id") String hospitalId);
+    Call<List<Hospital>> getHospitals(@Query("history_id") String history_id);
 
     @GET("gallery.php")
     Call<List<Gallery>> getGallery(@Query("id") String historyId);
@@ -108,7 +106,6 @@ public interface ApiInterface {
 
     @GET("accident.php")
     Call<Accident> getAccident(@Query("id") int user_id);
-
 
 
 

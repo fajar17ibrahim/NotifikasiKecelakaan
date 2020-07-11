@@ -4,15 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -60,10 +64,16 @@ public class NotificationActivity extends AppCompatActivity implements OnMapRead
     private String idRespondent;
     private int user_id;
 
+    private Button btnNavigation;
+
+    private Context mContext;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+
+        mContext = this;
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,6 +93,9 @@ public class NotificationActivity extends AppCompatActivity implements OnMapRead
 
         btnCurrentLocation = (FloatingActionButton) findViewById(R.id.btn_current_location);
         btnCurrentLocation.setOnClickListener(this);
+
+        btnNavigation = (Button) findViewById(R.id.btn_navigation);
+        btnNavigation.setOnClickListener(this);
 
         tvAddress = (TextView) findViewById(R.id.tv_address);
         tvDistance = (TextView) findViewById(R.id.tv_distance);
@@ -195,6 +208,17 @@ public class NotificationActivity extends AppCompatActivity implements OnMapRead
         switch (v.getId()) {
             case R.id.btn_current_location:
                 mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
+                break;
+
+            case R.id.btn_navigation:
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude2 + ","+ longitude2);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Toast.makeText(mContext, "Tujuan tidak valid", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }

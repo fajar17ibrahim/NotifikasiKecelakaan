@@ -12,7 +12,7 @@ public interface PoliceOfficeContract {
             void onFailure(Throwable t);
         }
 
-        void getPoliceOffice(OnFinishedListener onFinishedListener);
+        void getPoliceOffice(OnFinishedListener onFinishedListener, String history_id);
 
     }
 
@@ -24,6 +24,6 @@ public interface PoliceOfficeContract {
     }
 
     interface Presenter{
-        void requestDataFromServer();
+        void requestDataFromServer(String history_id);
     }
 }

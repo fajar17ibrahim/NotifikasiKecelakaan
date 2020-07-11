@@ -5,13 +5,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +40,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.ta.notifikasikecelakaan.MainActivity;
 import com.ta.notifikasikecelakaan.R;
 import com.ta.notifikasikecelakaan.directionhelpers.FetchURL;
 import com.ta.notifikasikecelakaan.directionhelpers.TaskLoadedCallback;
@@ -42,11 +48,16 @@ import com.ta.notifikasikecelakaan.model.Hospital;
 import com.ta.notifikasikecelakaan.model.Respondent;
 import com.ta.notifikasikecelakaan.network.ApiClient;
 import com.ta.notifikasikecelakaan.network.ApiInterface;
-import com.ta.notifikasikecelakaan.ui.policeofficelocation.PoliceOfficeLocationPresenter;
+import com.ta.notifikasikecelakaan.ui.login.LoginActivity;
 import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfileContract;
 import com.ta.notifikasikecelakaan.ui.setting.editprofile.ProfilePresenter;
 import com.ta.notifikasikecelakaan.utils.ApiUtils;
 import com.ta.notifikasikecelakaan.utils.Constans;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -58,6 +69,8 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
     private SharedPreferences sharedPreferences;
     private String respondentId;
     private String historyId;
+    private String helperId = "0";
+    private String userStatus;
     private String hospitalId;
     private GoogleMap mMap;
 
@@ -68,6 +81,7 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
     private Polyline currentPolyline;
     private CameraPosition Current;
 
+    private ProgressDialog loading;
 
     private TextView tvName, tvAddress;
 
@@ -80,11 +94,16 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
     private Double longitude2 = 0.0;
 
     private Button btnUpdateStatus;
+    private Button btnArriveRs;
+    private Button btnNavigation;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hospital_location);
+
+        mContext = this;
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -105,6 +124,8 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
         sharedPreferences = getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
         respondentId = sharedPreferences.getString(Constans.TAG_RESPONDENT_ID, "0");
         historyId = sharedPreferences.getString(Constans.TAG_HISTORY_ID, "0");
+        helperId = sharedPreferences.getString(Constans.TAG_HELPER_ID, "0");
+        userStatus = sharedPreferences.getString(Constans.TAG_USER_STATUS, "0");
 
         tvName = (TextView) findViewById(R.id.txt_name);
         tvAddress = (TextView) findViewById(R.id.txt_address);
@@ -112,8 +133,21 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
         btnUpdateStatus = (Button) findViewById(R.id.btn_go_rs);
         btnUpdateStatus.setOnClickListener(this);
 
-        getDirection = findViewById(R.id.btn_go_location);
-        getDirection.setOnClickListener(this);
+        btnArriveRs = (Button) findViewById(R.id.btn_arrive_rs);
+        btnArriveRs.setOnClickListener(this);
+
+        btnNavigation = findViewById(R.id.btn_navigation);
+        btnNavigation.setOnClickListener(this);
+
+        if (!helperId.equals("0")) {
+            if (helperId == respondentId && userStatus.equals("Dibawa ke Rumah Sakit")) {
+                btnArriveRs.setVisibility(View.VISIBLE);
+                btnUpdateStatus.setVisibility(View.GONE);
+            }
+        } else {
+            btnArriveRs.setVisibility(View.GONE);
+            btnUpdateStatus.setVisibility(View.VISIBLE);
+        }
 
         btnCurrentLocation = (FloatingActionButton) findViewById(R.id.btn_current_location);
         btnCurrentLocation.setOnClickListener(this);
@@ -149,8 +183,8 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
             }
         });
 
-        latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LAT, "0.0"));
-        longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LONG, "0.0"));
+        latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LAT, "0.0"));
+        longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LONG, "0.0"));
 
         Bundle data = getIntent().getExtras();
 
@@ -214,19 +248,94 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_go_location:
+            case R.id.btn_navigation:
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude2 + ","+ longitude2);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Toast.makeText(mContext, "Tujuan tidak valid", Toast.LENGTH_LONG).show();
+                }
                 break;
 
             case R.id.btn_go_rs:
-                updateStatus();
+                if (userStatus.equals("Dibawa ke Rumah Sakit")) {
+                    Toast.makeText(mContext, "Mohon maaf, korban sedang dibawa ke Rumah Sakit", Toast.LENGTH_LONG).show();
+                } else {
+                    new AlertDialog.Builder(mContext).setTitle("Konfirmasi")
+                            .setMessage("Anda akan berbagi lokasi dan nomor telepon kepada keluarga korban. Anda yakin ingin membawa korban ke Rumah Sakit ?")
+                            .setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    loading = ProgressDialog.show(mContext, null, "Harap Tunggu...", true, false);
+                                    updateStatus();
+                                }
+                            }).setNegativeButton("Tidak", null).show();
+                }
                 break;
 
             case R.id.btn_current_location:
                 mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
-
                 break;
+
+            case R.id.btn_arrive_rs:
+                loading = ProgressDialog.show(mContext, null, "Harap Tunggu...", true, false);
+                updateArriveRS();
         }
     }
+
+    private void updateArriveRS() {
+        ApiInterface apiClient = ApiClient.getClient(ApiUtils.BASE_URL_API).create(ApiInterface.class);
+
+        Call<ResponseBody> call = apiClient.requestUpdateStatusNormal(historyId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    loading.dismiss();
+                    try {
+                        JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                        if (jsonRESULTS.getString("success").equals("1")) {
+                            String message = jsonRESULTS.getString("message");
+                            Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
+
+                            sharedPreferences.edit().remove(Constans.TAG_HISTORY_ID).commit();
+                            sharedPreferences.edit().remove(Constans.TAG_USER_ID).commit();
+                            sharedPreferences.edit().remove(Constans.TAG_USER_LAT).commit();
+                            sharedPreferences.edit().remove(Constans.TAG_USER_LONG).commit();
+                            sharedPreferences.edit().remove(Constans.TAG_USER_STATUS).commit();
+                            sharedPreferences.edit().remove(Constans.TAG_HELPER_ID).commit();
+                            sharedPreferences.edit().remove(Constans.TAG_HELPER_NAME).commit();
+                            sharedPreferences.edit().remove(Constans.TAG_HELPER_PHONE).commit();
+                            sharedPreferences.edit().remove(Constans.TAG_HELPER_LAT).commit();
+                            sharedPreferences.edit().remove(Constans.TAG_HELPER_LONG).commit();
+
+                            Intent intent = new Intent(mContext, MainActivity.class);
+                            startActivity(intent);
+                        } else {
+                            String error_message = jsonRESULTS.getString("message");
+                            Toast.makeText(mContext, error_message, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(mContext, "Update Gagal! Coba lagi", Toast.LENGTH_LONG).show();
+                    loading.dismiss();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(HospitalLocationActivity.this, t.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+
 
     private void updateStatus() {
 
@@ -236,8 +345,26 @@ public class HospitalLocationActivity extends AppCompatActivity implements OnMap
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.d("Responde Body ", response.toString());
-                Toast.makeText(HospitalLocationActivity.this, response.toString(), Toast.LENGTH_LONG).show();
+                if (response.isSuccessful()) {
+                    loading.dismiss();
+                    try {
+                        JSONObject jsonRESULTS = new JSONObject(response.body().string());
+                        if (jsonRESULTS.getString("success").equals("1")) {
+                            String message = jsonRESULTS.getString("message");
+                            Toast.makeText(mContext, message, Toast.LENGTH_LONG).show();
+                        } else {
+                            String error_message = jsonRESULTS.getString("message");
+                            Toast.makeText(mContext, error_message, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(mContext, "Update Gagal! Coba lagi", Toast.LENGTH_LONG).show();
+                    loading.dismiss();
+                }
 
             }
 

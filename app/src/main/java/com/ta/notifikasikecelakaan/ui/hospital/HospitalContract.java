@@ -12,7 +12,7 @@ public interface HospitalContract {
             void onFailure(Throwable t);
         }
 
-        void getHospitals(OnFinishedListener onFinishedListener);
+        void getHospitals(OnFinishedListener onFinishedListener, String history_id);
 
     }
 
@@ -24,6 +24,6 @@ public interface HospitalContract {
     }
 
     interface Presenter{
-        void requestDataFromServer();
+        void requestDataFromServer(String history_id);
     }
 }

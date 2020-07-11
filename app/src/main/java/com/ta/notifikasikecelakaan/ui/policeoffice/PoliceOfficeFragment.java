@@ -1,6 +1,8 @@
 package com.ta.notifikasikecelakaan.ui.policeoffice;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +28,9 @@ import java.util.List;
 
 public class PoliceOfficeFragment extends Fragment implements PoliceOfficeContract.View {
 
+    private SharedPreferences sharedPreferences;
+    private String historyId;
+
     private ListPoliceOfficeAdapter listPoliceOfficeAdapter;
     private List<PoliceOffice> list;
     private PoliceOfficePresenter policeOfficePresenter;
@@ -39,6 +44,9 @@ public class PoliceOfficeFragment extends Fragment implements PoliceOfficeContra
 
         View root = inflater.inflate(R.layout.fragment_polisi, container, false);
 
+        sharedPreferences = getActivity().getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        historyId = sharedPreferences.getString(Constans.TAG_HISTORY_ID, "0");
+
         rvPolisi = root.findViewById(R.id.rv_polisi);
         rvPolisi.setHasFixedSize(true);
 
@@ -48,7 +56,8 @@ public class PoliceOfficeFragment extends Fragment implements PoliceOfficeContra
         showRecyclerList();
 
         policeOfficePresenter = new PoliceOfficePresenter(this);
-        policeOfficePresenter.requestDataFromServer();
+        policeOfficePresenter.requestDataFromServer(historyId);
+
         return root;
     }
 

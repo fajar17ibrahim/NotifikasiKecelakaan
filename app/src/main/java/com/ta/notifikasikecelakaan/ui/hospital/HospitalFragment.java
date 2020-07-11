@@ -1,6 +1,8 @@
 package com.ta.notifikasikecelakaan.ui.hospital;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +28,9 @@ import java.util.List;
 
 public class HospitalFragment extends Fragment implements HospitalContract.View {
 
+    private SharedPreferences sharedPreferences;
+    private String historyId;
+
     private ListHospitalsAdapter listHospitalsAdapter;
     private HospitalPresenter hospitalPresenter;
     private RecyclerView rvHospital;
@@ -38,6 +43,9 @@ public class HospitalFragment extends Fragment implements HospitalContract.View 
 
         View root = inflater.inflate(R.layout.fragment_rs, container, false);
 
+        sharedPreferences = getActivity().getSharedPreferences(Constans.MY_SHARED_PREFERENCES, Context.MODE_PRIVATE);
+        historyId = sharedPreferences.getString(Constans.TAG_HISTORY_ID, "0");
+
         rvHospital = root.findViewById(R.id.rv_rs);
         rvHospital.setHasFixedSize(true);
 
@@ -47,7 +55,7 @@ public class HospitalFragment extends Fragment implements HospitalContract.View 
         showRecyclerList();
 
         hospitalPresenter = new HospitalPresenter(this);
-        hospitalPresenter.requestDataFromServer();
+        hospitalPresenter.requestDataFromServer(historyId);
 
         return root;
     }

@@ -2,18 +2,10 @@ package com.ta.notifikasikecelakaan.ui.register;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,17 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.ta.notifikasikecelakaan.R;
@@ -43,8 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -60,8 +41,6 @@ public class RegistrasiActivity extends AppCompatActivity implements View.OnClic
     private ApiInterface mApiService;
 
     private CameraPosition Current;
-
-    private ProgressDialog pDialog;
 
     private EditText eNama;
     private EditText eTelp;

@@ -17,10 +17,10 @@ import retrofit2.Response;
 public class HospitalRequest implements HospitalContract.Model {
 
     @Override
-    public void getHospitals(final OnFinishedListener onFinishedListener) {
+    public void getHospitals(final OnFinishedListener onFinishedListener, String history_id) {
         ApiInterface apiInterface = ApiClient.getClient(ApiUtils.BASE_URL_API).create(ApiInterface.class);
 
-        Call<List<Hospital>> call = apiInterface.getHospitals();
+        Call<List<Hospital>> call = apiInterface.getHospitals(history_id);
         call.enqueue(new Callback<List<Hospital>>() {
             @Override
             public void onResponse(Call<List<Hospital>> call, Response<List<Hospital>> response) {

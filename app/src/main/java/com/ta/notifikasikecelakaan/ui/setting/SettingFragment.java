@@ -79,10 +79,18 @@ public class SettingFragment extends Fragment implements View.OnClickListener{
                         sharedPreferences.edit().remove(Constans.TAG_RESPONDENT_ID).commit();
                         sharedPreferences.edit().remove(Constans.TAG_RESPONDENT_LAT).commit();
                         sharedPreferences.edit().remove(Constans.TAG_RESPONDENT_LONG).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_RESPONDENT_PHONE).commit();
                         sharedPreferences.edit().remove(Constans.TAG_HISTORY_ID).commit();
                         sharedPreferences.edit().remove(Constans.TAG_USER_ID).commit();
                         sharedPreferences.edit().remove(Constans.TAG_USER_LAT).commit();
                         sharedPreferences.edit().remove(Constans.TAG_USER_LONG).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_USER_STATUS).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_HELPER_ID).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_HELPER_NAME).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_HELPER_PHONE).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_HELPER_LAT).commit();
+                        sharedPreferences.edit().remove(Constans.TAG_HELPER_LONG).commit();
+
                         sharedPreferences.edit().remove(Constans.TAG_SESSION).commit();
                         Intent iLogin = new Intent(getContext(), LoginActivity.class);
                         startActivity(iLogin);

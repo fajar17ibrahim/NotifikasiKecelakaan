@@ -33,10 +33,44 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constans.MY_SHARED_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(Constans.TAG_USER_ID, Integer.parseInt(remoteMessage.getData().get("user_id")));
-        editor.putString(Constans.TAG_HISTORY_ID, remoteMessage.getData().get("history_id"));
-        editor.putString(Constans.TAG_USER_LAT, remoteMessage.getData().get("latitude"));
-        editor.putString(Constans.TAG_USER_LONG, remoteMessage.getData().get("longitude"));
+
+        editor.putString(Constans.TAG_USER_STATUS, remoteMessage.getData().get("status"));
+
+        if (remoteMessage.getData().get("status").equals("kecelakaan")) {
+            editor.putInt(Constans.TAG_USER_ID, Integer.parseInt(remoteMessage.getData().get("user_id")));
+            editor.putString(Constans.TAG_HISTORY_ID, remoteMessage.getData().get("history_id"));
+            editor.putString(Constans.TAG_USER_LAT, remoteMessage.getData().get("latitude"));
+            editor.putString(Constans.TAG_USER_LONG, remoteMessage.getData().get("longitude"));
+        } else if (remoteMessage.getData().get("status").equals("Dibawa ke Rumah Sakit")) {
+            editor.putInt(Constans.TAG_USER_ID, Integer.parseInt(remoteMessage.getData().get("user_id")));
+            editor.putString(Constans.TAG_HISTORY_ID, remoteMessage.getData().get("history_id"));
+            editor.putString(Constans.TAG_HELPER_ID, remoteMessage.getData().get("helper_id"));
+            editor.putString(Constans.TAG_USER_LAT, remoteMessage.getData().get("user_lat"));
+            editor.putString(Constans.TAG_USER_LONG, remoteMessage.getData().get("user_long"));
+            editor.putString(Constans.TAG_HELPER_NAME, remoteMessage.getData().get("helper_name"));
+            editor.putString(Constans.TAG_HELPER_PHONE, remoteMessage.getData().get("helper_phone"));
+            editor.putString(Constans.TAG_HELPER_LAT, remoteMessage.getData().get("helper_lat"));
+            editor.putString(Constans.TAG_HELPER_LONG, remoteMessage.getData().get("helper_long"));
+            editor.putString(Constans.TAG_HOSPITAL_CHOOSE_NAME, remoteMessage.getData().get("hospital_name"));
+            editor.putString(Constans.TAG_HOSPITAL_CHOOSE_LAT, remoteMessage.getData().get("hospital_lat"));
+            editor.putString(Constans.TAG_HOSPITAL_CHOOSE_LONG, remoteMessage.getData().get("hospital_long"));
+        } else {
+            sharedPreferences.edit().remove(Constans.TAG_HISTORY_ID).commit();
+            sharedPreferences.edit().remove(Constans.TAG_USER_ID).commit();
+            sharedPreferences.edit().remove(Constans.TAG_USER_LAT).commit();
+            sharedPreferences.edit().remove(Constans.TAG_USER_LONG).commit();
+            sharedPreferences.edit().remove(Constans.TAG_USER_STATUS).commit();
+            sharedPreferences.edit().remove(Constans.TAG_HELPER_ID).commit();
+            sharedPreferences.edit().remove(Constans.TAG_HELPER_NAME).commit();
+            sharedPreferences.edit().remove(Constans.TAG_HELPER_PHONE).commit();
+            sharedPreferences.edit().remove(Constans.TAG_HELPER_LAT).commit();
+            sharedPreferences.edit().remove(Constans.TAG_HELPER_LONG).commit();
+            sharedPreferences.edit().remove(Constans.TAG_HELPER_LONG).commit();
+            sharedPreferences.edit().remove(Constans.TAG_HOSPITAL_CHOOSE_NAME).commit();
+            sharedPreferences.edit().remove(Constans.TAG_HOSPITAL_CHOOSE_LAT).commit();
+            sharedPreferences.edit().remove(Constans.TAG_HOSPITAL_CHOOSE_LONG).commit();
+        }
+
         editor.apply();
 
         long[] pattern = {500, 500, 500, 500};

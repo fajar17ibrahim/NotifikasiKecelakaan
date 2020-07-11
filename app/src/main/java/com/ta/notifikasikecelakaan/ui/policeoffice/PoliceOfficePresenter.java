@@ -16,11 +16,11 @@ public class PoliceOfficePresenter implements PoliceOfficeContract.Presenter, Po
     }
 
     @Override
-    public void requestDataFromServer() {
+    public void requestDataFromServer(String history_id) {
         if ( policeOfficeView != null ) {
             policeOfficeView.showProgress();
         }
-        policeOfficeModel.getPoliceOffice(this);
+        policeOfficeModel.getPoliceOffice(this, history_id);
     }
 
     @Override

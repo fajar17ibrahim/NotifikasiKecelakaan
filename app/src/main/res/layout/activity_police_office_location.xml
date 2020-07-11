@@ -67,7 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
-            android:id="@+id/btnGetDirection"
+            android:id="@+id/btn_navigation"
             android:background="@drawable/border_radius_blue"
             android:padding="15dp"
             android:text="NAVIGASI"

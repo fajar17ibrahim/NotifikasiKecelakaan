@@ -37,7 +37,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements TaskLoadedCallback, ProfileContract.View {
+public class MainActivity extends AppCompatActivity implements ProfileContract.View {
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements TaskLoadedCallbac
 
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putString(Constans.TAG_RESPONDENT_DISTANCE, String.valueOf(respondent.getDistance()));
+        editor.putString(Constans.TAG_RESPONDENT_PHONE, respondent.getPhone());
         editor.putString(Constans.TAG_RESPONDENT_LAT, String.valueOf(respondent.getLatitude()));
         editor.putString(Constans.TAG_RESPONDENT_LONG, String.valueOf(respondent.getLongitude()));
         editor.apply();
@@ -135,12 +136,6 @@ public class MainActivity extends AppCompatActivity implements TaskLoadedCallbac
         Toast.makeText(this, "Data gagal dimuat.", Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void onTaskDone(Object... values) {
-        if (   currentPolyline != null)
-            currentPolyline.remove();
-        currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
-    }
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this).setTitle("Konfirmasi")

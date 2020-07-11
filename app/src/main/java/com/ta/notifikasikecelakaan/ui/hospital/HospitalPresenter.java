@@ -32,10 +32,10 @@ public class HospitalPresenter implements HospitalContract.Presenter, HospitalCo
     }
 
     @Override
-    public void requestDataFromServer() {
+    public void requestDataFromServer(String history_id) {
         if ( hospitalView != null ) {
             hospitalView.showProgress();
         }
-        hospitalModel.getHospitals(this);
+        hospitalModel.getHospitals(this, history_id);
     }
 }

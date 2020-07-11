@@ -82,7 +82,7 @@
             android:orientation="horizontal" >
 
             <Button
-                android:id="@+id/btn_go_location"
+                android:id="@+id/btn_navigation"
                 android:background="@drawable/border_radius_blue"
                 android:padding="15dp"
                 android:text="NAVIGASI"

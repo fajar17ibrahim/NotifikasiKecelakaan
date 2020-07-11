@@ -41,4 +41,5 @@
     <string name="text_share">Ajak teman untuk menggunakan \naplikasi notifikasi kecelakaan untuk mendapatkan\ninformasi terjadinya kecelakaan disekitar.</string>
     <string name="API_KEY">AIzaSyAiCKvJcTu95NxXaqUwAE2ntEITNzoCmPk</string>
     <string name="share_message">Install aplikasi Notifikasi Kecelakaan untuk mendapatkan notifikasi kecelakaan yang terjadi disekitar anda.\n\nDownload sekarang :\nhttps://drive.google.com/drive/folders/1-Y7fqc8BOyLw6x43xmW7Z6h7aydXvzUW?usp=sharing</string>
+    <string name="status">Korban sedang dibawa ke Rumah Sakit Dr. Suotomo oleh Muhammad Fajar Ibrahim</string>
 </resources>

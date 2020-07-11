@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -44,7 +46,6 @@ import com.ta.notifikasikecelakaan.utils.Constans;
 public class PoliceOfficeLocationActivity extends AppCompatActivity implements OnMapReadyCallback, TaskLoadedCallback, View.OnClickListener {
 
     private SharedPreferences sharedPreferences;
-    private String idRespondent;
     private GoogleMap mMap;
 
     private MapView mapView;
@@ -53,9 +54,6 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
     private FloatingActionButton btnCurrentLocation;
     private Polyline currentPolyline;
     private CameraPosition Current;
-
-    private PoliceOfficeLocationPresenter policeOfficeLocationPresenter;
-    private ProfilePresenter profilePresenter;
 
     private TextView tvName, tvAddress;
     private ProgressBar pbLoading;
@@ -69,10 +67,16 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
     private Double latitude2 = 0.0;
     private Double longitude2 = 0.0;
 
+    private Button btnNavigation;
+
+    private Context mContext;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_police_office_location);
+
+        mContext = this;
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -95,11 +99,11 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
         tvAddress = (TextView) findViewById(R.id.txt_address);
         pbLoading = (ProgressBar) findViewById(R.id.pb_loading);
 
-        getDirection = findViewById(R.id.btnGetDirection);
-        getDirection.setOnClickListener(this);
-
         btnCurrentLocation = (FloatingActionButton) findViewById(R.id.btn_current_location);
         btnCurrentLocation.setOnClickListener(this);
+
+        btnNavigation = (Button) findViewById(R.id.btn_navigation);
+        btnNavigation.setOnClickListener(this);
 
         mapView = (MapView) findViewById(R.id.map);
         if(mapView != null) {
@@ -132,8 +136,8 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
             }
         });
 
-        latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LAT, "0.0"));
-        longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_RESPONDENT_LONG, "0.0"));
+        latitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LAT, "0.0"));
+        longitude = Double.parseDouble(sharedPreferences.getString(Constans.TAG_USER_LONG, "0.0"));
 
         Bundle data = getIntent().getExtras();
 
@@ -195,14 +199,20 @@ public class PoliceOfficeLocationActivity extends AppCompatActivity implements O
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnGetDirection:
+            case R.id.btn_navigation:
+                Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitude2 + ","+ longitude2);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Toast.makeText(mContext, "Tujuan tidak valid", Toast.LENGTH_LONG).show();
+                }
 
                 break;
 
             case R.id.btn_current_location:
                 mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Current)));
-//                CameraPosition Respondent = CameraPosition.builder().target(new LatLng(latitude, longitude)).zoom(13).bearing(0).tilt(0).build();
-//                mMap.moveCamera((CameraUpdateFactory.newCameraPosition(Respondent)));
             break;
         }
     }

@@ -16,10 +16,10 @@ import retrofit2.Response;
 public class PoliceOfficeRequest implements PoliceOfficeContract.Model{
 
     @Override
-    public void getPoliceOffice(final OnFinishedListener onFinishedListener) {
+    public void getPoliceOffice(final OnFinishedListener onFinishedListener, String history_id) {
         ApiInterface apiService = ApiClient.getClient(ApiUtils.BASE_URL_API).create(ApiInterface.class);
 
-        Call<List<PoliceOffice>> call = apiService.getPoliceOffice();
+        Call<List<PoliceOffice>> call = apiService.getPoliceOffice(history_id);
         call.enqueue(new Callback<List<PoliceOffice>>() {
             @Override
             public void onResponse(Call<List<PoliceOffice>> call, Response<List<PoliceOffice>> response) {

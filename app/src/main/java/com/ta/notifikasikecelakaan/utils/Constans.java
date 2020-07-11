@@ -24,4 +24,14 @@ public class Constans {
     public static final String TAG_POLICEOFFICE_LAT = "police_office_LAT";
     public static final String TAG_POLICEOFFICE_LONG = "police_office_LONG";
     public static final String API_KEY = "AIzaSyAiCKvJcTu95NxXaqUwAE2ntEITNzoCmPk";
+    public static final String TAG_USER_STATUS = "user_status";
+    public static final String TAG_HELPER_PHONE = "helper_phone";
+    public static final String TAG_HELPER_NAME = "helper_name";
+    public static final String TAG_HELPER_LAT = "helper_lat";
+    public static final String TAG_HELPER_LONG = "helper_long";
+    public static final String TAG_RESPONDENT_PHONE = "respondent_phone";
+    public static final String TAG_HOSPITAL_CHOOSE_NAME = "hospital_choose_name";
+    public static final String TAG_HOSPITAL_CHOOSE_LAT = "hospital_choose_lat";
+    public static final String TAG_HOSPITAL_CHOOSE_LONG = "hospital_choose_long";
+    public static final String TAG_HELPER_ID = "helper_id";
 }
